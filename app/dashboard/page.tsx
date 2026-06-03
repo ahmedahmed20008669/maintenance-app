@@ -301,217 +301,228 @@ function DashboardContent() {
           )}
         </div>
 
-        {/* Detail Panel */}
+      </div>
+
+      {/* Detail Panel Overlay */}
+      {selectedRequest && (
+        <div
+          className="fixed inset-0 bg-black/40 backdrop-blur-sm z-40 transition-opacity"
+          onClick={() => setSelectedRequest(null)}
+        />
+      )}
+
+      {/* Detail Panel Drawer */}
+      <div
+        className={`fixed top-0 right-0 h-full w-full sm:w-[420px] z-50 bg-[var(--neutral-950)] border-l border-[rgba(0,153,173,0.2)] shadow-2xl transform transition-transform duration-300 ease-in-out flex flex-col ${
+          selectedRequest ? "translate-x-0" : "translate-x-full"
+        }`}
+      >
         {selectedRequest && (
-          <div className="lg:w-[420px] shrink-0 lg:sticky lg:top-24 h-fit">
-            <div className="glass rounded-2xl overflow-hidden slide-up">
-              {/* Detail Header */}
-              <div className="bg-gradient-to-r from-[rgba(99,102,241,0.15)] to-[rgba(167,139,250,0.1)] px-5 py-4 border-b border-[rgba(99,102,241,0.1)]">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <CategoryIcon category={selectedRequest.category} />
-                    <div>
-                      <p className="text-xs text-[var(--neutral-500)] font-mono">
-                        #{selectedRequest.id.slice(0, 8)}
-                      </p>
-                      <p className="text-sm font-semibold text-white">
-                        {selectedRequest.category}
-                      </p>
-                    </div>
+          <>
+            {/* Detail Header */}
+            <div className="bg-gradient-to-r from-[rgba(0,153,173,0.15)] to-transparent px-5 py-4 border-b border-[rgba(0,153,173,0.1)] flex items-center justify-between shrink-0">
+              <div className="flex items-center gap-3">
+                <CategoryIcon category={selectedRequest.category} />
+                <div>
+                  <p className="text-xs text-[var(--neutral-500)] font-mono">
+                    #{selectedRequest.id.slice(0, 8)}
+                  </p>
+                  <p className="text-sm font-semibold text-white font-prompt">
+                    {selectedRequest.category}
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => setSelectedRequest(null)}
+                className="text-[var(--neutral-500)] hover:text-white transition-colors text-xl p-2"
+                aria-label="Close detail panel"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="flex-1 overflow-y-auto p-5 space-y-6">
+              {/* Status + Severity */}
+              <div className="flex items-center gap-2 flex-wrap">
+                <StatusBadge status={selectedRequest.status} />
+                <SeverityIndicator severity={selectedRequest.severity} />
+                <PriorityBadge priority={selectedRequest.priority} />
+              </div>
+
+              {/* Attached Photo */}
+              {selectedRequest.imageUrl && (
+                <div>
+                  <h4 className="text-xs font-semibold text-[var(--neutral-500)] uppercase tracking-wider mb-2 font-prompt">
+                    Attached Photo
+                  </h4>
+                  <div className="rounded-xl overflow-hidden border border-[var(--neutral-700)]">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={selectedRequest.imageUrl}
+                      alt="Tenant Upload"
+                      className="w-full h-auto object-cover max-h-64"
+                    />
                   </div>
-                  <button
-                    onClick={() => setSelectedRequest(null)}
-                    className="text-[var(--neutral-500)] hover:text-white transition-colors text-lg"
-                    aria-label="Close detail panel"
-                  >
-                    ✕
-                  </button>
+                </div>
+              )}
+
+              {/* Summary */}
+              <div>
+                <h4 className="text-xs font-semibold text-[var(--neutral-500)] uppercase tracking-wider mb-2 font-prompt">
+                  AI Summary
+                </h4>
+                <p className="text-sm text-[var(--foreground)] leading-relaxed bg-[rgba(255,255,255,0.02)] p-4 rounded-xl border border-[rgba(255,255,255,0.05)]">
+                  {selectedRequest.summary}
+                </p>
+              </div>
+
+              {/* Original Input */}
+              <div>
+                <h4 className="text-xs font-semibold text-[var(--neutral-500)] uppercase tracking-wider mb-2 font-prompt">
+                  Tenant Description
+                </h4>
+                <div className="bg-[var(--neutral-900)] rounded-xl p-4 border border-[var(--neutral-800)]">
+                  <p className="text-sm text-[var(--neutral-400)] italic">
+                    &quot;{selectedRequest.rawInput}&quot;
+                  </p>
                 </div>
               </div>
 
-              <div className="p-5 space-y-5 max-h-[70vh] overflow-y-auto">
-                {/* Status + Severity */}
-                <div className="flex items-center gap-2 flex-wrap">
-                  <StatusBadge status={selectedRequest.status} />
-                  <SeverityIndicator severity={selectedRequest.severity} />
-                  <PriorityBadge priority={selectedRequest.priority} />
-                </div>
-
-                {/* Attached Photo */}
-                {selectedRequest.imageUrl && (
+              {/* Action Steps */}
+              {(() => {
+                let steps: string[] = [];
+                try {
+                  steps = JSON.parse(selectedRequest.actionSteps);
+                } catch {
+                  steps = [];
+                }
+                if (steps.length === 0) return null;
+                return (
                   <div>
-                    <h4 className="text-xs font-semibold text-[var(--neutral-500)] uppercase tracking-wider mb-2">
-                      Attached Photo
+                    <h4 className="text-xs font-semibold text-[var(--neutral-500)] uppercase tracking-wider mb-3 font-prompt">
+                      Action Steps
                     </h4>
-                    <div className="rounded-xl overflow-hidden border border-[var(--neutral-700)]">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img 
-                        src={selectedRequest.imageUrl} 
-                        alt="Tenant Upload" 
-                        className="w-full h-auto object-cover max-h-64"
-                      />
+                    <div className="space-y-2">
+                      {steps.map((step: string, i: number) => (
+                        <div
+                          key={i}
+                          className="flex items-start gap-3 text-sm text-[var(--foreground)] bg-[rgba(0,153,173,0.05)] p-3 rounded-lg border border-[rgba(0,153,173,0.1)]"
+                        >
+                          <span className="text-[var(--primary-400)] font-bold shrink-0">
+                            {i + 1}.
+                          </span>
+                          {step}
+                        </div>
+                      ))}
                     </div>
                   </div>
-                )}
+                );
+              })()}
 
-                {/* Summary */}
-                <div>
-                  <h4 className="text-xs font-semibold text-[var(--neutral-500)] uppercase tracking-wider mb-1">
-                    AI Summary
-                  </h4>
-                  <p className="text-sm text-[var(--neutral-200)] leading-relaxed">
-                    {selectedRequest.summary}
+              {/* Estimated Cost */}
+              {selectedRequest.estimatedCost && (
+                <div className="flex items-center gap-3 bg-[rgba(245,158,11,0.08)] rounded-xl p-4 border border-[rgba(245,158,11,0.15)]">
+                  <span className="text-xl">💰</span>
+                  <span className="text-sm text-[#fbbf24] font-semibold">
+                    {selectedRequest.estimatedCost}
+                  </span>
+                </div>
+              )}
+
+              {/* Info Grid */}
+              <div className="grid grid-cols-2 gap-3">
+                <div className="bg-[var(--neutral-900)] rounded-xl p-3 border border-[var(--neutral-800)]">
+                  <p className="text-[10px] text-[var(--neutral-500)] uppercase font-prompt">
+                    Tenant
+                  </p>
+                  <p className="text-xs text-white font-medium mt-1 truncate">
+                    {selectedRequest.tenantName}
                   </p>
                 </div>
+                <div className="bg-[var(--neutral-900)] rounded-xl p-3 border border-[var(--neutral-800)]">
+                  <p className="text-[10px] text-[var(--neutral-500)] uppercase font-prompt">
+                    Unit
+                  </p>
+                  <p className="text-xs text-white font-medium mt-1 truncate">
+                    {selectedRequest.tenantUnit || "N/A"}
+                  </p>
+                </div>
+                <div className="bg-[var(--neutral-900)] rounded-xl p-3 border border-[var(--neutral-800)]">
+                  <p className="text-[10px] text-[var(--neutral-500)] uppercase font-prompt">
+                    Assigned To
+                  </p>
+                  <p className="text-xs text-white font-medium mt-1 truncate">
+                    {selectedRequest.assignedTo || "Unassigned"}
+                  </p>
+                </div>
+                <div className="bg-[var(--neutral-900)] rounded-xl p-3 border border-[var(--neutral-800)]">
+                  <p className="text-[10px] text-[var(--neutral-500)] uppercase font-prompt">
+                    Created
+                  </p>
+                  <p className="text-xs text-white font-medium mt-1 truncate">
+                    {new Date(selectedRequest.createdAt).toLocaleDateString()}
+                  </p>
+                </div>
+              </div>
 
-                {/* Original Input */}
+              {/* Actions */}
+              <div className="border-t border-[rgba(255,255,255,0.05)] pt-6 space-y-4">
+                <h4 className="text-xs font-semibold text-[var(--neutral-500)] uppercase tracking-wider font-prompt">
+                  Actions
+                </h4>
+
+                {/* Status Update */}
                 <div>
-                  <h4 className="text-xs font-semibold text-[var(--neutral-500)] uppercase tracking-wider mb-1">
-                    Tenant Description
-                  </h4>
-                  <div className="bg-[var(--neutral-800)] rounded-lg p-3 border border-[var(--neutral-700)]">
-                    <p className="text-xs text-[var(--neutral-400)] italic">
-                      &quot;{selectedRequest.rawInput}&quot;
-                    </p>
+                  <label className="text-xs text-[var(--neutral-400)] mb-2 block">
+                    Update Status
+                  </label>
+                  <div className="flex gap-2 flex-wrap">
+                    {["Pending", "In Progress", "Resolved", "Cancelled"].map(
+                      (s) => (
+                        <button
+                          key={s}
+                          onClick={() =>
+                            updateRequest(selectedRequest.id, { status: s })
+                          }
+                          disabled={selectedRequest.status === s}
+                          className={`text-xs px-4 py-2 rounded-lg border transition-all ${
+                            selectedRequest.status === s
+                              ? "opacity-50 cursor-not-allowed border-[var(--neutral-700)] text-[var(--neutral-500)] bg-[var(--neutral-900)]"
+                              : "border-[var(--neutral-700)] text-[var(--neutral-300)] hover:border-[var(--primary-500)] hover:text-[var(--primary-300)] hover:bg-[rgba(0,153,173,0.05)]"
+                          }`}
+                        >
+                          {s}
+                        </button>
+                      )
+                    )}
                   </div>
                 </div>
 
-                {/* Action Steps */}
-                {(() => {
-                  let steps: string[] = [];
-                  try {
-                    steps = JSON.parse(selectedRequest.actionSteps);
-                  } catch {
-                    steps = [];
-                  }
-                  if (steps.length === 0) return null;
-                  return (
-                    <div>
-                      <h4 className="text-xs font-semibold text-[var(--neutral-500)] uppercase tracking-wider mb-2">
-                        Action Steps
-                      </h4>
-                      <div className="space-y-1.5">
-                        {steps.map((step: string, i: number) => (
-                          <div
-                            key={i}
-                            className="flex items-start gap-2 text-xs text-[var(--neutral-300)]"
-                          >
-                            <span className="text-[var(--primary-400)] font-bold shrink-0">
-                              {i + 1}.
-                            </span>
-                            {step}
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  );
-                })()}
-
-                {/* Estimated Cost */}
-                {selectedRequest.estimatedCost && (
-                  <div className="flex items-center gap-2 bg-[rgba(245,158,11,0.08)] rounded-lg p-3 border border-[rgba(245,158,11,0.15)]">
-                    <span>💰</span>
-                    <span className="text-xs text-[#fbbf24] font-semibold">
-                      {selectedRequest.estimatedCost}
-                    </span>
-                  </div>
-                )}
-
-                {/* Info */}
-                <div className="grid grid-cols-2 gap-3">
-                  <div className="bg-[var(--neutral-800)] rounded-lg p-2.5 border border-[var(--neutral-700)]">
-                    <p className="text-[10px] text-[var(--neutral-500)] uppercase">
-                      Tenant
-                    </p>
-                    <p className="text-xs text-white font-medium mt-0.5">
-                      {selectedRequest.tenantName}
-                    </p>
-                  </div>
-                  <div className="bg-[var(--neutral-800)] rounded-lg p-2.5 border border-[var(--neutral-700)]">
-                    <p className="text-[10px] text-[var(--neutral-500)] uppercase">
-                      Unit
-                    </p>
-                    <p className="text-xs text-white font-medium mt-0.5">
-                      {selectedRequest.tenantUnit || "N/A"}
-                    </p>
-                  </div>
-                  <div className="bg-[var(--neutral-800)] rounded-lg p-2.5 border border-[var(--neutral-700)]">
-                    <p className="text-[10px] text-[var(--neutral-500)] uppercase">
-                      Assigned To
-                    </p>
-                    <p className="text-xs text-white font-medium mt-0.5">
-                      {selectedRequest.assignedTo || "Unassigned"}
-                    </p>
-                  </div>
-                  <div className="bg-[var(--neutral-800)] rounded-lg p-2.5 border border-[var(--neutral-700)]">
-                    <p className="text-[10px] text-[var(--neutral-500)] uppercase">
-                      Created
-                    </p>
-                    <p className="text-xs text-white font-medium mt-0.5">
-                      {new Date(selectedRequest.createdAt).toLocaleString()}
-                    </p>
-                  </div>
-                </div>
-
-                {/* Actions */}
-                <div className="border-t border-[rgba(99,102,241,0.1)] pt-5 space-y-3">
-                  <h4 className="text-xs font-semibold text-[var(--neutral-500)] uppercase tracking-wider">
-                    Actions
-                  </h4>
-
-                  {/* Status Update */}
-                  <div>
-                    <label className="text-xs text-[var(--neutral-400)] mb-1 block">
-                      Update Status
-                    </label>
-                    <div className="flex gap-2 flex-wrap">
-                      {["Pending", "In Progress", "Resolved", "Cancelled"].map(
-                        (s) => (
-                          <button
-                            key={s}
-                            onClick={() =>
-                              updateRequest(selectedRequest.id, { status: s })
-                            }
-                            disabled={selectedRequest.status === s}
-                            className={`text-xs px-3 py-1.5 rounded-lg border transition-all ${
-                              selectedRequest.status === s
-                                ? "opacity-50 cursor-not-allowed border-[var(--neutral-700)] text-[var(--neutral-500)]"
-                                : "border-[var(--neutral-700)] text-[var(--neutral-300)] hover:border-[var(--primary-500)] hover:text-[var(--primary-300)]"
-                            }`}
-                          >
-                            {s}
-                          </button>
-                        )
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Assign */}
-                  <div>
-                    <label className="text-xs text-[var(--neutral-400)] mb-1 block">
-                      Assign to Service Provider
-                    </label>
-                    <select
-                      value={selectedRequest.assignedTo || ""}
-                      onChange={(e) =>
-                        updateRequest(selectedRequest.id, {
-                          assignedTo: e.target.value,
-                        })
-                      }
-                      className="w-full px-3 py-2 rounded-lg bg-[var(--neutral-800)] border border-[var(--neutral-700)] text-white text-xs cursor-pointer"
-                    >
-                      <option value="">Select Provider...</option>
-                      {SERVICE_PROVIDERS.map((sp) => (
-                        <option key={sp} value={sp}>
-                          {sp}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
+                {/* Assign */}
+                <div>
+                  <label className="text-xs text-[var(--neutral-400)] mb-2 block">
+                    Assign to Service Provider
+                  </label>
+                  <select
+                    value={selectedRequest.assignedTo || ""}
+                    onChange={(e) =>
+                      updateRequest(selectedRequest.id, {
+                        assignedTo: e.target.value,
+                      })
+                    }
+                    className="w-full px-4 py-3 rounded-xl bg-[var(--neutral-900)] border border-[var(--neutral-700)] text-white text-sm cursor-pointer focus:border-[var(--primary-500)] outline-none"
+                  >
+                    <option value="">Select Provider...</option>
+                    {SERVICE_PROVIDERS.map((sp) => (
+                      <option key={sp} value={sp}>
+                        {sp}
+                      </option>
+                    ))}
+                  </select>
                 </div>
               </div>
             </div>
-          </div>
+          </>
         )}
       </div>
     </div>
