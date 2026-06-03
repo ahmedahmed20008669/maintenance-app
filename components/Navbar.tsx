@@ -37,11 +37,11 @@ export default function Navbar() {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 flex items-center gap-2
+                  className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 flex items-center gap-2 font-prompt
                     ${
                       isActive
                         ? "bg-[rgba(0,153,173,0.15)] text-[var(--primary-300)] border border-[rgba(0,153,173,0.2)]"
-                        : "text-[var(--neutral-400)] hover:text-white hover:bg-[rgba(255,255,255,0.05)]"
+                        : "text-[var(--foreground)] hover:text-[var(--link-hover)] hover:bg-[rgba(255,255,255,0.05)]"
                     }`}
                 >
                   <span>{item.icon}</span>
@@ -49,6 +49,7 @@ export default function Navbar() {
                 </Link>
               );
             })}
+
           </div>
 
           {/* Mobile Toggle */}
@@ -86,11 +87,11 @@ export default function Navbar() {
                   key={item.href}
                   href={item.href}
                   onClick={() => setMobileOpen(false)}
-                  className={`block px-4 py-3 rounded-lg text-sm font-medium transition-all
+                  className={`block px-4 py-3 rounded-lg text-sm font-semibold transition-all font-prompt
                     ${
                       isActive
                         ? "bg-[rgba(0,153,173,0.15)] text-[var(--primary-300)]"
-                        : "text-[var(--neutral-400)] hover:text-white hover:bg-[rgba(255,255,255,0.05)]"
+                        : "text-[var(--foreground)] hover:text-[var(--link-hover)] hover:bg-[rgba(255,255,255,0.05)]"
                     }`}
                 >
                   <span className="mr-2">{item.icon}</span>

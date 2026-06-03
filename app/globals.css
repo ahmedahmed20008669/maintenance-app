@@ -40,16 +40,22 @@
   --neutral-700: #4d555d;
   --neutral-800: #34393e;
   --neutral-900: #1a1c1f;
-  --neutral-950: #111319;
+  --neutral-950: #15171c;
+  --foreground: #b5b5b5;
+  --headings: #ffffff;
+  --link-hover: #dd4242;
+  --border-color: #717171;
 }
 
 @theme inline {
   --color-background: var(--neutral-950);
-  --color-foreground: #f1f5f9;
+  --color-foreground: var(--foreground);
   --color-primary: var(--primary-500);
   --color-primary-hover: var(--primary-400);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-accent: #ffffff;
+  --color-link-hover: var(--link-hover);
+  --font-sans: var(--font-sans);
+  --font-prompt: var(--font-prompt);
 }
 
 /* ===== GLOBAL STYLES ===== */

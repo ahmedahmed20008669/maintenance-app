@@ -1,9 +1,15 @@
 import type { Metadata } from "next";
-import { Prompt } from "next/font/google";
+import { Poppins, Prompt } from "next/font/google";
 import "./globals.css";
 
+const poppinsFont = Poppins({
+  variable: "--font-sans",
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700", "800", "900"],
+});
+
 const promptFont = Prompt({
-  variable: "--font-geist-sans",
+  variable: "--font-prompt",
   subsets: ["latin"],
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
 });
@@ -27,7 +33,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${promptFont.variable} h-full antialiased`}>
+    <html lang="en" className={`${poppinsFont.variable} ${promptFont.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col gradient-bg overflow-x-hidden">{children}</body>
     </html>
   );
