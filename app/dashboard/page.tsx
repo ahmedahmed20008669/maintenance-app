@@ -523,7 +523,9 @@ export default function DashboardPage() {
     <ToastProvider>
       <Navbar />
       <main className="flex-1 relative">
-        <div className="orb w-[400px] h-[400px] bg-[var(--primary-600)] top-[-200px] right-[-100px]" />
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="orb w-[400px] h-[400px] bg-[var(--primary-600)] top-[-200px] right-[-100px]" />
+        </div>
         <DashboardContent />
       </main>
     </ToastProvider>

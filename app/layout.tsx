@@ -34,7 +34,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${poppinsFont.variable} ${promptFont.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col gradient-bg overflow-x-hidden">{children}</body>
+      <body className="min-h-full flex flex-col gradient-bg">{children}</body>
     </html>
   );
 }
