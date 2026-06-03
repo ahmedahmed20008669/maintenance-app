@@ -1,0 +1,37 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/client"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model Request {
+  id              String   @id @default(cuid())
+  tenantName      String
+  tenantEmail     String   @default("")
+  tenantUnit      String   @default("")
+  rawInput        String
+  category        String   @default("Uncategorized")
+  severity        String   @default("Medium")
+  priority        Int      @default(3)
+  status          String   @default("Pending")
+  assignedTo      String?
+  summary         String   @default("")
+  actionSteps     String   @default("[]")
+  estimatedCost   String?
+  imageUrl        String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  requestId String
+  type      String
+  recipient String
+  message   String
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
