@@ -10,5 +10,5 @@ mkdir -p /data/uploads
 rm -rf ./public/uploads
 ln -s /data/uploads ./public/uploads
 
-# Run Next.js production server
-exec npm run start
+# Run Next.js production server binding to all network interfaces
+exec npx next start -H 0.0.0.0 -p 3000
