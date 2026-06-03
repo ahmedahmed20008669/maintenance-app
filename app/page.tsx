@@ -1,175 +1,182 @@
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
+import Image from "next/image";
 
 export default function Home() {
   return (
     <>
       <Navbar />
       <main className="flex-1 relative overflow-hidden">
-        {/* Background Orbs */}
+        {/* Background Orbs matching Adeer Gold/Navy identity */}
         <div className="orb w-[500px] h-[500px] bg-[var(--primary-600)] top-[-200px] left-[-100px]" />
-        <div className="orb w-[400px] h-[400px] bg-[#a78bfa] bottom-[-150px] right-[-100px]" style={{ animationDelay: "5s" }} />
-        <div className="orb w-[300px] h-[300px] bg-[#f472b6] top-[40%] left-[60%]" style={{ animationDelay: "10s" }} />
+        <div className="orb w-[400px] h-[400px] bg-[#0099ad] bottom-[-150px] right-[-100px]" style={{ animationDelay: "5s" }} />
+        <div className="orb w-[300px] h-[300px] bg-[#e0f6f8] top-[40%] left-[60%]" style={{ animationDelay: "10s" }} />
 
         {/* Hero Section */}
-        <section className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-16">
-          <div className="text-center max-w-4xl mx-auto fade-in">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass text-xs font-medium text-[var(--primary-300)] mb-8">
-              <span className="w-2 h-2 rounded-full bg-[var(--primary-400)] animate-pulse" />
-              AI-Powered Property Management
-            </div>
-
-            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight leading-[1.1] mb-6">
-              <span className="text-white">Smart </span>
-              <span className="gradient-text">Maintenance</span>
-              <br />
-              <span className="text-white">Made Simple</span>
-            </h1>
-
-            <p className="text-lg sm:text-xl text-[var(--neutral-400)] max-w-2xl mx-auto mb-10 leading-relaxed">
-              Automate tenant requests with AI-powered classification,
-              intelligent prioritization, and seamless coordination between
-              tenants, managers, and service providers.
-            </p>
-
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Link
-                href="/submit"
-                className="w-full sm:w-auto px-8 py-4 rounded-xl bg-gradient-to-r from-[var(--primary-600)] to-[var(--primary-500)] text-white font-semibold text-base hover:from-[var(--primary-500)] hover:to-[var(--primary-400)] transition-all duration-300 shadow-lg shadow-[rgba(99,102,241,0.3)] hover:shadow-[rgba(99,102,241,0.5)] hover:-translate-y-0.5 text-center"
-              >
-                Submit a Request
-              </Link>
-              <Link
-                href="/dashboard"
-                className="w-full sm:w-auto px-8 py-4 rounded-xl glass text-white font-semibold text-base hover:bg-[rgba(255,255,255,0.08)] transition-all duration-300 hover:-translate-y-0.5 text-center"
-              >
-                Operations Dashboard →
-              </Link>
-            </div>
-          </div>
-        </section>
-
-        {/* Features Section */}
-        <section className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-24">
-          <div className="grid md:grid-cols-3 gap-6">
-            {[
-              {
-                icon: "🤖",
-                title: "AI Classification",
-                description:
-                  "Natural language processing automatically categorizes and prioritizes every maintenance request with precision.",
-                delay: "0s",
-              },
-              {
-                icon: "⚡",
-                title: "Instant Routing",
-                description:
-                  "Requests are intelligently routed to the right service provider based on category, severity, and availability.",
-                delay: "0.1s",
-              },
-              {
-                icon: "📊",
-                title: "Real-Time Dashboard",
-                description:
-                  "Comprehensive operations view with live status tracking, priority indicators, and actionable insights.",
-                delay: "0.2s",
-              },
-            ].map((feature) => (
-              <div
-                key={feature.title}
-                className="glass rounded-2xl p-8 card-hover fade-in"
-                style={{ animationDelay: feature.delay }}
-              >
-                <span className="text-4xl mb-5 block">{feature.icon}</span>
-                <h3 className="text-lg font-bold text-white mb-3">
-                  {feature.title}
-                </h3>
-                <p className="text-sm text-[var(--neutral-400)] leading-relaxed">
-                  {feature.description}
-                </p>
+        <section className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-20">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-12">
+            
+            <div className="flex-1 fade-in">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass text-xs font-medium text-[var(--primary-300)] mb-8">
+                <span className="w-2 h-2 rounded-full bg-[var(--primary-400)] animate-pulse" />
+                Available for Innovation & Leadership Roles
               </div>
-            ))}
+
+              <h1 className="text-5xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight leading-[1.1] mb-6">
+                <span className="text-white">Mohamed </span>
+                <span className="gradient-text">Samir Hassan</span>
+              </h1>
+
+              <h2 className="text-2xl font-medium text-[var(--primary-300)] mb-6">
+                Innovation Manager & Full Stack Developer
+              </h2>
+
+              <p className="text-lg text-[var(--neutral-400)] max-w-2xl mb-10 leading-relaxed">
+                Bridging the gap between cutting-edge technology and real estate innovation. 
+                Specializing in building AI-powered platforms, robust system architectures, and 
+                premium digital experiences that drive operational excellence.
+              </p>
+
+              <div className="flex flex-col sm:flex-row items-center gap-4">
+                <a
+                  href="#projects"
+                  className="w-full sm:w-auto px-8 py-4 rounded-xl bg-gradient-to-r from-[var(--primary-600)] to-[var(--primary-500)] text-white font-semibold text-base hover:from-[var(--primary-500)] hover:to-[var(--primary-400)] transition-all duration-300 shadow-lg shadow-[rgba(0,153,173,0.3)] hover:shadow-[rgba(0,153,173,0.5)] hover:-translate-y-0.5 text-center"
+                >
+                  View Featured Projects
+                </a>
+                <a
+                  href="https://www.linkedin.com/in/mohamedsamirhassan/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full sm:w-auto px-8 py-4 rounded-xl glass text-white font-semibold text-base hover:bg-[rgba(255,255,255,0.08)] transition-all duration-300 hover:-translate-y-0.5 text-center flex items-center justify-center gap-2"
+                >
+                  <span>Connect on LinkedIn</span>
+                  <span>↗</span>
+                </a>
+              </div>
+            </div>
+
+            <div className="flex-1 w-full max-w-md relative fade-in" style={{ animationDelay: "0.2s" }}>
+              <div className="relative aspect-square rounded-3xl overflow-hidden glass p-2 border border-[rgba(0,153,173,0.3)] glow-primary">
+                <div className="w-full h-full rounded-2xl overflow-hidden relative">
+                   <Image 
+                     src="/profile-pic.png" 
+                     alt="Mohamed Samir Hassan" 
+                     fill 
+                     className="object-cover mix-blend-luminosity hover:mix-blend-normal transition-all duration-500" 
+                   />
+                </div>
+              </div>
+            </div>
+
           </div>
         </section>
 
-        {/* Stats Section */}
-        <section className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-24">
-          <div className="glass rounded-2xl p-8 sm:p-12">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-              {[
-                { value: "95%", label: "Faster Classification" },
-                { value: "60%", label: "Cost Reduction" },
-                { value: "24/7", label: "Availability" },
-                { value: "4.9★", label: "Tenant Satisfaction" },
-              ].map((stat) => (
-                <div key={stat.label} className="text-center">
-                  <div className="text-3xl sm:text-4xl font-extrabold gradient-text mb-2">
-                    {stat.value}
+        {/* Projects / Portfolio Section */}
+        <section id="projects" className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-24 pt-12">
+          <div className="mb-12">
+            <h2 className="text-3xl font-bold text-white mb-4">Featured Innovation</h2>
+            <div className="h-1 w-20 bg-gradient-to-r from-[var(--primary-500)] to-transparent rounded-full"></div>
+          </div>
+
+          <div className="glass rounded-3xl p-8 sm:p-12 relative overflow-hidden group">
+            {/* Project background accent */}
+            <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-bl from-[rgba(0,153,173,0.15)] to-transparent rounded-bl-full pointer-events-none transition-opacity duration-500 opacity-50 group-hover:opacity-100" />
+            
+            <div className="grid lg:grid-cols-2 gap-12 items-center relative z-10">
+              
+              <div>
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-[rgba(16,185,129,0.1)] text-[#10b981] border border-[rgba(16,185,129,0.2)] text-xs font-bold uppercase tracking-wide mb-6">
+                  Live Prototype
+                </div>
+                
+                <h3 className="text-3xl font-extrabold text-white mb-4">
+                  AI-Powered Property Maintenance Portal
+                </h3>
+                
+                <p className="text-[var(--neutral-400)] text-lg mb-8 leading-relaxed">
+                  A next-generation facility management platform built for modern real estate portfolios. 
+                  Leveraging Google's Gemini AI, this system automatically classifies, prioritizes, and routes tenant 
+                  maintenance requests—dramatically reducing operational overhead and improving response times.
+                </p>
+
+                <div className="grid grid-cols-2 gap-6 mb-10">
+                  <div className="glass-light p-4 rounded-xl">
+                    <div className="text-[var(--primary-400)] text-2xl mb-2">🤖</div>
+                    <div className="font-bold text-white mb-1">AI Triage</div>
+                    <div className="text-xs text-[var(--neutral-400)]">Auto-categorizes issues using NLP</div>
                   </div>
-                  <div className="text-xs sm:text-sm text-[var(--neutral-400)] font-medium">
-                    {stat.label}
+                  <div className="glass-light p-4 rounded-xl">
+                    <div className="text-[var(--primary-400)] text-2xl mb-2">⚡</div>
+                    <div className="font-bold text-white mb-1">Smart Routing</div>
+                    <div className="text-xs text-[var(--neutral-400)]">Assigns directly to the right provider</div>
                   </div>
                 </div>
-              ))}
-            </div>
-          </div>
-        </section>
 
-        {/* How It Works */}
-        <section className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-24">
-          <h2 className="text-3xl font-bold text-center text-white mb-12">
-            How It Works
-          </h2>
-          <div className="grid md:grid-cols-4 gap-6">
-            {[
-              {
-                step: "01",
-                title: "Describe",
-                desc: "Tenant describes the issue in plain language — no forms to fill.",
-              },
-              {
-                step: "02",
-                title: "Classify",
-                desc: "AI instantly analyzes, categorizes, and assigns a priority score.",
-              },
-              {
-                step: "03",
-                title: "Route",
-                desc: "The request is routed to the right team or service provider.",
-              },
-              {
-                step: "04",
-                title: "Resolve",
-                desc: "Track progress with real-time updates until resolution.",
-              },
-            ].map((item) => (
-              <div
-                key={item.step}
-                className="glass rounded-2xl p-6 card-hover relative group"
-              >
-                <div className="text-[var(--primary-500)] text-xs font-bold mb-3 tracking-widest">
-                  STEP {item.step}
+                <div className="flex flex-col sm:flex-row gap-4">
+                  <Link
+                    href="/submit"
+                    className="flex-1 px-6 py-3 rounded-xl bg-white text-black font-bold hover:bg-[var(--primary-50)] transition-colors text-center shadow-lg hover:-translate-y-0.5"
+                  >
+                    Test Tenant Portal
+                  </Link>
+                  <Link
+                    href="/dashboard"
+                    className="flex-1 px-6 py-3 rounded-xl glass border border-[var(--primary-500)] text-white font-bold hover:bg-[rgba(0,153,173,0.1)] transition-colors text-center hover:-translate-y-0.5"
+                  >
+                    Admin Dashboard
+                  </Link>
                 </div>
-                <h3 className="text-lg font-bold text-white mb-2">
-                  {item.title}
-                </h3>
-                <p className="text-sm text-[var(--neutral-400)] leading-relaxed">
-                  {item.desc}
-                </p>
-                <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-br from-[rgba(99,102,241,0.1)] to-transparent rounded-bl-3xl rounded-tr-2xl" />
               </div>
-            ))}
+
+              <div className="relative rounded-2xl overflow-hidden glass border border-[rgba(255,255,255,0.1)] shadow-2xl aspect-[4/3]">
+                {/* Mockup UI representation */}
+                <div className="absolute top-0 w-full h-8 bg-[var(--neutral-900)] border-b border-[rgba(255,255,255,0.05)] flex items-center px-4 gap-2">
+                  <div className="w-3 h-3 rounded-full bg-red-500 opacity-80"></div>
+                  <div className="w-3 h-3 rounded-full bg-yellow-500 opacity-80"></div>
+                  <div className="w-3 h-3 rounded-full bg-green-500 opacity-80"></div>
+                </div>
+                <div className="pt-8 p-6 h-full bg-[var(--neutral-950)] flex flex-col">
+                  <div className="h-10 w-48 bg-[rgba(255,255,255,0.05)] rounded-lg mb-8 animate-pulse"></div>
+                  <div className="flex gap-4 mb-6">
+                    <div className="h-24 flex-1 bg-[rgba(255,255,255,0.02)] rounded-xl border border-[rgba(255,255,255,0.05)]"></div>
+                    <div className="h-24 flex-1 bg-[rgba(255,255,255,0.02)] rounded-xl border border-[rgba(255,255,255,0.05)]"></div>
+                    <div className="h-24 flex-1 bg-[rgba(255,255,255,0.02)] rounded-xl border border-[rgba(255,255,255,0.05)]"></div>
+                  </div>
+                  <div className="flex-1 bg-[rgba(255,255,255,0.02)] rounded-xl border border-[rgba(255,255,255,0.05)] p-4">
+                    <div className="h-6 w-32 bg-[rgba(255,255,255,0.05)] rounded mb-4"></div>
+                    <div className="space-y-3">
+                      <div className="h-12 w-full bg-[rgba(255,255,255,0.03)] rounded flex items-center px-4">
+                        <div className="h-4 w-4 rounded-full bg-green-500 mr-4"></div>
+                        <div className="h-3 w-1/3 bg-[rgba(255,255,255,0.05)] rounded"></div>
+                      </div>
+                      <div className="h-12 w-full bg-[rgba(255,255,255,0.03)] rounded flex items-center px-4">
+                        <div className="h-4 w-4 rounded-full bg-yellow-500 mr-4"></div>
+                        <div className="h-3 w-1/2 bg-[rgba(255,255,255,0.05)] rounded"></div>
+                      </div>
+                      <div className="h-12 w-full bg-[rgba(255,255,255,0.03)] rounded flex items-center px-4">
+                        <div className="h-4 w-4 rounded-full bg-red-500 mr-4"></div>
+                        <div className="h-3 w-1/4 bg-[rgba(255,255,255,0.05)] rounded"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
           </div>
         </section>
 
         {/* Footer */}
-        <footer className="relative z-10 border-t border-[rgba(99,102,241,0.1)] py-8">
+        <footer className="relative z-10 border-t border-[rgba(0,153,173,0.1)] py-8 mt-12">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="text-sm text-[var(--neutral-500)]">
-              © 2026 MaintenanceAI — AI-Powered Property Management
+              © {new Date().getFullYear()} Mohamed Samir Hassan
             </div>
             <div className="flex items-center gap-6 text-sm text-[var(--neutral-500)]">
-              <span>Built with Next.js & Gemini AI</span>
+              <a href="https://www.linkedin.com/in/mohamedsamirhassan/" target="_blank" rel="noopener noreferrer" className="hover:text-[var(--primary-400)] transition-colors">
+                LinkedIn Profile
+              </a>
             </div>
           </div>
         </footer>

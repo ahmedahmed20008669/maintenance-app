@@ -5,10 +5,9 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 
 const navItems = [
-  { href: "/", label: "Home", icon: "🏠" },
-  { href: "/submit", label: "Submit Request", icon: "📝" },
+  { href: "/", label: "Portfolio", icon: "👤" },
+  { href: "/submit", label: "Maintenance Demo", icon: "🛠️" },
   { href: "/dashboard", label: "Dashboard", icon: "📊" },
-  { href: "/notifications", label: "Notifications", icon: "🔔" },
 ];
 
 export default function Navbar() {
@@ -16,18 +15,18 @@ export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
-    <nav className="glass sticky top-0 z-50 border-b border-[rgba(99,102,241,0.1)]">
+    <nav className="glass sticky top-0 z-50 border-b border-[rgba(0,153,173,0.1)]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-3 group">
-            <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-[var(--primary-500)] to-[#a78bfa] flex items-center justify-center text-white font-bold text-sm shadow-lg shadow-[rgba(99,102,241,0.3)] group-hover:shadow-[rgba(99,102,241,0.5)] transition-shadow">
-              M
+            <div className="bg-white/95 p-2 rounded-xl backdrop-blur-sm shadow-md group-hover:shadow-lg group-hover:bg-white transition-all border border-[rgba(255,255,255,0.5)]">
+              <img 
+                src="/adeer-logo.png" 
+                alt="Adeer International Logo" 
+                className="h-8 w-auto object-contain drop-shadow-sm"
+              />
             </div>
-            <span className="text-lg font-bold tracking-tight">
-              <span className="gradient-text">Maintenance</span>
-              <span className="text-[var(--neutral-400)]">AI</span>
-            </span>
           </Link>
 
           {/* Desktop Nav */}
@@ -41,7 +40,7 @@ export default function Navbar() {
                   className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 flex items-center gap-2
                     ${
                       isActive
-                        ? "bg-[rgba(99,102,241,0.15)] text-[var(--primary-300)] border border-[rgba(99,102,241,0.2)]"
+                        ? "bg-[rgba(0,153,173,0.15)] text-[var(--primary-300)] border border-[rgba(0,153,173,0.2)]"
                         : "text-[var(--neutral-400)] hover:text-white hover:bg-[rgba(255,255,255,0.05)]"
                     }`}
                 >
@@ -78,7 +77,7 @@ export default function Navbar() {
 
       {/* Mobile Menu */}
       {mobileOpen && (
-        <div className="md:hidden glass-light border-t border-[rgba(99,102,241,0.1)] fade-in">
+        <div className="md:hidden glass-light border-t border-[rgba(0,153,173,0.1)] fade-in">
           <div className="px-4 py-3 space-y-1">
             {navItems.map((item) => {
               const isActive = pathname === item.href;
@@ -90,7 +89,7 @@ export default function Navbar() {
                   className={`block px-4 py-3 rounded-lg text-sm font-medium transition-all
                     ${
                       isActive
-                        ? "bg-[rgba(99,102,241,0.15)] text-[var(--primary-300)]"
+                        ? "bg-[rgba(0,153,173,0.15)] text-[var(--primary-300)]"
                         : "text-[var(--neutral-400)] hover:text-white hover:bg-[rgba(255,255,255,0.05)]"
                     }`}
                 >
