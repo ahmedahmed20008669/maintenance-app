@@ -24,11 +24,11 @@ export default function Home() {
 
               <h1 className="text-5xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight leading-[1.1] mb-6 font-prompt">
                 <span className="text-white">Mohamed </span>
-                <span className="gradient-text">Samir Hassan</span>
+                <span className="gradient-text">Samir Hassan, MSc, PhD R</span>
               </h1>
 
               <h2 className="text-2xl font-semibold text-[var(--primary-300)] mb-6 font-prompt">
-                Innovation Manager & Full Stack Developer
+                AI and innovation manager
               </h2>
 
               <p className="text-lg text-[var(--foreground)] max-w-2xl mb-10 leading-relaxed">
@@ -172,7 +172,7 @@ export default function Home() {
         <footer className="relative z-10 border-t border-[rgba(0,153,173,0.1)] py-8 mt-12">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="text-sm text-[var(--neutral-500)]">
-              © {new Date().getFullYear()} Mohamed Samir Hassan
+              © {new Date().getFullYear()} Mohamed Samir Hassan, MSc, PhD R
             </div>
             <div className="flex items-center gap-6 text-sm text-[var(--neutral-500)]">
               <a href="https://www.linkedin.com/in/mohamedsamirhassan/" target="_blank" rel="noopener noreferrer" className="hover:text-[var(--primary-400)] transition-colors">
