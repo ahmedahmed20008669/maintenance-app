@@ -6,6 +6,7 @@ from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, Tabl
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.units import inch
 from reportlab.pdfgen import canvas
+from reportlab.graphics.shapes import Drawing, Rect, String, Line, Group, Polygon
 
 # Define Palette (Adeer International Branding Colors)
 COLOR_DARK_BG = colors.HexColor('#15171c')      # Primary dark background
@@ -77,6 +78,67 @@ class NumberedCanvas(canvas.Canvas):
         page_str = f"Page {self._pageNumber} of {page_count}"
         self.drawRightString(8.5 * inch - 54, 38, page_str)
         self.restoreState()
+
+def create_system_diagram():
+    """
+    Creates a native ReportLab Drawing diagram showing the system data flow.
+    """
+    d = Drawing(468, 200) # Width matches text margins nicely (6.5 inches approx 468 pt)
+    
+    # Define boxes helper
+    def draw_node(x, y, w, h, text, is_dark=False):
+        bg = COLOR_DARK_BG if is_dark else COLOR_LIGHT_GRAY
+        border = COLOR_TEAL if is_dark else COLOR_BORDER
+        text_color = COLOR_WHITE if is_dark else COLOR_DARK_BG
+        
+        d.add(Rect(x, y, w, h, fillColor=bg, strokeColor=border, strokeWidth=1.5, rx=5, ry=5))
+        d.add(String(x + w/2.0, y + h/2.0 - 4, text, textAnchor='middle', fontName='Helvetica-Bold', fontSize=9, fillColor=text_color))
+
+    def draw_arrow(x1, y1, x2, y2):
+        d.add(Line(x1, y1, x2, y2, strokeColor=COLOR_TEAL, strokeWidth=1.5))
+        # Arrowhead
+        if x1 == x2: # Vertical arrow
+            dy = 5 if y2 > y1 else -5
+            d.add(Polygon([x2-4, y2-dy, x2+4, y2-dy, x2, y2], fillColor=COLOR_TEAL, strokeColor=COLOR_TEAL))
+        else: # Horizontal arrow
+            dx = 5 if x2 > x1 else -5
+            d.add(Polygon([x2-dx, y2-4, x2-dx, y2+4, x2, y2], fillColor=COLOR_TEAL, strokeColor=COLOR_TEAL))
+
+    # Node positions
+    # Row 1 (Tenant Submission)
+    draw_node(20, 140, 110, 40, "1. Tenant Text Intake")
+    
+    # Arrow to AI Parser
+    draw_arrow(130, 160, 170, 160)
+    
+    # Row 1 (AI Processing Server)
+    draw_node(170, 140, 130, 40, "2. Gemini 2.0 Parser", is_dark=True)
+    
+    # Arrow to DB Layer
+    draw_arrow(300, 160, 340, 160)
+    
+    # Row 1 (Database)
+    draw_node(340, 140, 110, 40, "3. SQLite/Prisma DB")
+    
+    # Arrow down to Operations Triage
+    draw_arrow(395, 140, 395, 90)
+    
+    # Row 2 (Operations Dashboard View)
+    draw_node(320, 50, 130, 40, "4. Real-time Ops Panel", is_dark=True)
+    
+    # Arrow left to notification system
+    draw_arrow(320, 70, 270, 70)
+    
+    # Row 2 (Notification Dispatch)
+    draw_node(150, 50, 120, 40, "5. Automated Routing")
+    
+    # Arrow left to Service Provider / Tenant Feedback
+    draw_arrow(150, 70, 110, 70)
+    
+    # Row 2 (End-users resolved)
+    draw_node(10, 50, 100, 40, "6. Dispatched Work")
+
+    return d
 
 def create_pdf(filename="MaintenanceAI_Competitive_Analysis.pdf"):
     # Target exactly 10 pages. We will use PageBreak() strategically to control pagination.
@@ -248,41 +310,22 @@ def create_pdf(filename="MaintenanceAI_Competitive_Analysis.pdf"):
     ))
     story.append(PageBreak())
 
-    # ================= PAGE 4: MAINTENANCE-AI CORE ARCHITECTURE =================
-    story.append(Paragraph("3. MaintenanceAI Core Architecture", style_h1))
-    story.append(Spacer(1, 10))
+    # ================= PAGE 4: SYSTEM ARCHITECTURE & DIAGRAM =================
+    story.append(Paragraph("3. System Architecture & Flow Diagram", style_h1))
+    story.append(Spacer(1, 5))
     story.append(Paragraph(
-        "MaintenanceAI entirely replaces the complex form-filling model with a single, highly intuitive <b>Natural Language Intake portal</b>. "
-        "Tenants simply describe the issue in their own words. The backend processes this unstructured text using Google Gemini 2.0 Flash "
-        "in a single, high-speed API transaction, outputting a fully structured schema.",
+        "The diagram below outlines the automated lifecycle of a maintenance request. Unlike standard portals that require manual routing, "
+        "MaintenanceAI processes the request dynamically, pushing real-time notifications to the database and operations dashboard within seconds.",
         style_body
     ))
     
-    # Diagram / Table of architecture representation
-    data_arch = [
-        [Paragraph("<b>Pipeline Stage</b>", style_body_bold), Paragraph("<b>Technologies Used</b>", style_body_bold), Paragraph("<b>Function & Output</b>", style_body_bold)],
-        [Paragraph("Intake Layer", style_body), Paragraph("React / Next.js Client", style_body), Paragraph("Captures unstructured tenant description & images", style_body)],
-        [Paragraph("AI Parsing Engine", style_body), Paragraph("Google Gemini 2.0 Flash API", style_body), Paragraph("Extracts Category, Severity, Priority, Steps, and Cost Estimate", style_body)],
-        [Paragraph("Database & Persistence", style_body), Paragraph("SQLite / Azure SQL / Prisma ORM", style_body), Paragraph("Stores ticket structure, tracks logs, manages notifications", style_body)],
-        [Paragraph("Ops Dashboard", style_body), Paragraph("Next.js App Router (Sticky Canvas)", style_body), Paragraph("Provides managers with status controls, sorting, and dispatch overlays", style_body)],
-        [Paragraph("Notification Dispatch", style_body), Paragraph("Automated API Routes", style_body), Paragraph("Pushes live updates to tenants and service providers", style_body)]
-    ]
-    t_arch = Table(data_arch, colWidths=[1.5*inch, 2*inch, 3.5*inch])
-    t_arch.setStyle(TableStyle([
-        ('BACKGROUND', (0,0), (-1,0), COLOR_DARK_BG),
-        ('TEXTCOLOR', (0,0), (-1,0), COLOR_WHITE),
-        ('ALIGN', (0,0), (-1,-1), 'LEFT'),
-        ('BOTTOMPADDING', (0,0), (-1,-1), 8),
-        ('TOPPADDING', (0,0), (-1,-1), 8),
-        ('ROWBACKGROUNDS', (0,1), (-1,-1), [COLOR_WHITE, COLOR_LIGHT_GRAY]),
-        ('GRID', (0,0), (-1,-1), 0.5, COLOR_BORDER),
-    ]))
-    story.append(t_arch)
-    story.append(Spacer(1, 15))
+    # Insert system diagram
+    story.append(create_system_diagram())
+    story.append(Spacer(1, 10))
     
     story.append(Paragraph(
         "By binding SQLite (designed for rapid development and staging) with an abstraction layer through <b>Prisma ORM</b>, "
-        "the architecture is fully enterprise-ready. It can seamlessly transition to Azure SQL or PostgreSQL with a single change in the database provider string, "
+        "the architecture is fully enterprise-ready. It can transition to Azure SQL or PostgreSQL with a single change in the database provider string, "
         "making it extremely adaptable to enterprise growth constraints.",
         style_body
     ))
