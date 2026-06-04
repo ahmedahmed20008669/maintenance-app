@@ -27,9 +27,8 @@ function SubmitForm() {
     tenantEmail: "",
     tenantUnit: "",
     description: "",
-    imageUrl: "",
+    images: [] as string[],
   });
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
 
   const processFile = (file: File) => {
@@ -37,7 +36,6 @@ function SubmitForm() {
       addToast({ type: "error", title: "Invalid File", message: "Please upload an image file." });
       return;
     }
-    // Client-side optimization using Canvas
     const reader = new FileReader();
     reader.onload = (event) => {
       const img = new Image();
@@ -65,10 +63,11 @@ function SubmitForm() {
         const ctx = canvas.getContext("2d");
         ctx?.drawImage(img, 0, 0, width, height);
 
-        // Convert to WebP Base64 (highly optimized)
         const base64Str = canvas.toDataURL("image/webp", 0.7);
-        setFormData((prev) => ({ ...prev, imageUrl: base64Str }));
-        setImagePreview(base64Str);
+        setFormData((prev) => ({ 
+          ...prev, 
+          images: [...prev.images, base64Str] 
+        }));
       };
       img.src = event.target?.result as string;
     };
@@ -76,8 +75,9 @@ function SubmitForm() {
   };
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) processFile(file);
+    if (e.target.files) {
+      Array.from(e.target.files).forEach(processFile);
+    }
   };
 
   const handleDragOver = (e: React.DragEvent) => {
@@ -93,9 +93,8 @@ function SubmitForm() {
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(false);
-    const file = e.dataTransfer.files?.[0];
-    if (file) {
-      processFile(file);
+    if (e.dataTransfer.files) {
+      Array.from(e.dataTransfer.files).forEach(processFile);
     }
   };
 
@@ -236,39 +235,45 @@ function SubmitForm() {
             onDrop={handleDrop}
             className={`mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-dashed rounded-xl transition-colors ${isDragging ? "border-[var(--primary-400)] bg-[rgba(0,153,173,0.1)]" : "border-[var(--neutral-700)] hover:border-[var(--primary-500)] bg-[var(--neutral-800)]"}`}
           >
-            <div className="space-y-1 text-center">
-              {imagePreview ? (
-                <div className="relative inline-block">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={imagePreview} alt="Preview" className="h-32 w-auto rounded-lg" />
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setImagePreview(null);
-                      setFormData({ ...formData, imageUrl: "" });
-                    }}
-                    className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs shadow-lg"
-                  >
-                    ✕
-                  </button>
+            <div className="space-y-4 text-center w-full">
+              {formData.images.length > 0 && (
+                <div className="flex flex-wrap gap-4 justify-center">
+                  {formData.images.map((img, index) => (
+                    <div key={index} className="relative inline-block">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={img} alt={`Preview ${index}`} className="h-24 w-auto rounded-lg shadow-md" />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setFormData(prev => ({
+                            ...prev,
+                            images: prev.images.filter((_, i) => i !== index)
+                          }));
+                        }}
+                        className="absolute -top-2 -right-2 bg-red-500 hover:bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs shadow-lg transition-colors"
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  ))}
                 </div>
-              ) : (
-                <>
-                  <svg className="mx-auto h-12 w-12 text-[var(--neutral-500)]" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
-                    <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-                  <div className="flex text-sm text-[var(--neutral-400)] justify-center">
-                    <label htmlFor="file-upload" className="relative cursor-pointer rounded-md font-medium text-[var(--primary-400)] hover:text-[var(--primary-300)] focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-[var(--primary-500)]">
-                      <span>Upload a file</span>
-                      <input id="file-upload" name="file-upload" type="file" className="sr-only" accept="image/*" onChange={handleImageUpload} />
-                    </label>
-                    <p className="pl-1">or drag and drop</p>
-                  </div>
-                  <p className="text-xs text-[var(--neutral-500)]">
-                    PNG, JPG, GIF up to 10MB (automatically compressed)
-                  </p>
-                </>
               )}
+              
+              <div className="flex flex-col items-center justify-center">
+                <svg className="mx-auto h-12 w-12 text-[var(--neutral-500)]" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
+                  <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+                <div className="flex text-sm text-[var(--neutral-400)] justify-center mt-2">
+                  <label htmlFor="file-upload" className="relative cursor-pointer rounded-md font-medium text-[var(--primary-400)] hover:text-[var(--primary-300)] focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-[var(--primary-500)]">
+                    <span>Upload a file</span>
+                    <input id="file-upload" name="file-upload" type="file" multiple className="sr-only" accept="image/*" onChange={handleImageUpload} />
+                  </label>
+                  <p className="pl-1">or drag and drop multiple</p>
+                </div>
+                <p className="text-xs text-[var(--neutral-500)] mt-1">
+                  PNG, JPG, GIF up to 10MB (automatically compressed)
+                </p>
+              </div>
             </div>
           </div>
         </div>

@@ -2,8 +2,8 @@ import { GoogleGenerativeAI } from '@google/generative-ai'
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '')
 
-export async function classifyMaintenanceRequest(description: string) {
-  const prompt = `You are an AI assistant for a property management company. Analyze the following maintenance request from a tenant and provide a structured classification.
+export async function classifyMaintenanceRequest(description: string, images: string[] = []) {
+  const prompt = `You are an AI assistant for a property management company. Analyze the following maintenance request (and any attached images) from a tenant and provide a structured classification.
 
 Maintenance Request: "${description}"
 
@@ -12,20 +12,34 @@ Respond ONLY with a valid JSON object (no markdown, no code fences) with the fol
   "category": "one of: Plumbing, Electrical, HVAC, Structural, Appliance, Pest Control, Cleaning, Security, Landscaping, General",
   "severity": "one of: Low, Medium, High, Critical",
   "priority": "a number from 1 (highest) to 5 (lowest)",
-  "summary": "a brief professional summary of the issue (1-2 sentences)",
+  "summary": "a brief professional summary of the issue (1-2 sentences, include details from images if present)",
   "actionSteps": ["step 1", "step 2", "step 3"],
   "estimatedCost": "estimated cost range like '$50-$150'"
 }`
 
   try {
     const apiKey = process.env.GEMINI_API_KEY || '';
+    
+    const parts: any[] = [{ text: prompt }];
+    images.forEach(img => {
+      const matches = img.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
+      if (matches && matches.length === 3) {
+        parts.push({
+          inlineData: {
+            mimeType: matches[1],
+            data: matches[2]
+          }
+        });
+      }
+    });
+
     const res = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=" + apiKey, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        contents: [{ parts: [{ text: prompt }] }],
+        contents: [{ parts }],
         generationConfig: {
           temperature: 0.1
         }

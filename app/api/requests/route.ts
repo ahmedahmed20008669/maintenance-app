@@ -17,7 +17,7 @@ export async function GET() {
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json()
-    let { tenantName, tenantEmail, tenantUnit, description, imageUrl } = body
+    let { tenantName, tenantEmail, tenantUnit, description, images = [] } = body
 
     if (!tenantName || !description) {
       return NextResponse.json(
@@ -27,27 +27,34 @@ export async function POST(req: NextRequest) {
     }
 
     // Handle base64 image saving
-    if (imageUrl && imageUrl.startsWith('data:image')) {
-      try {
-        const matches = imageUrl.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
-        if (matches && matches.length === 3) {
-          const buffer = Buffer.from(matches[2], 'base64');
-          const fileName = `upload-${Date.now()}-${Math.round(Math.random() * 1000)}.webp`;
-          const uploadDir = path.join(process.cwd(), 'public', 'uploads');
-          if (!fs.existsSync(uploadDir)) {
-            fs.mkdirSync(uploadDir, { recursive: true });
+    const savedImageUrls: string[] = [];
+    const validImagesToProcess: string[] = [];
+    
+    for (const img of images) {
+      if (img && img.startsWith('data:image')) {
+        try {
+          const matches = img.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
+          if (matches && matches.length === 3) {
+            const buffer = Buffer.from(matches[2], 'base64');
+            const fileName = `upload-${Date.now()}-${Math.round(Math.random() * 1000)}.webp`;
+            const uploadDir = path.join(process.cwd(), 'public', 'uploads');
+            if (!fs.existsSync(uploadDir)) {
+              fs.mkdirSync(uploadDir, { recursive: true });
+            }
+            fs.writeFileSync(path.join(uploadDir, fileName), buffer);
+            savedImageUrls.push(`/uploads/${fileName}`);
+            validImagesToProcess.push(img);
           }
-          fs.writeFileSync(path.join(uploadDir, fileName), buffer);
-          imageUrl = `/uploads/${fileName}`;
+        } catch (err) {
+          console.error('Failed to save image:', err);
         }
-      } catch (err) {
-        console.error('Failed to save image:', err);
-        imageUrl = null; // Don't crash the request if image save fails
       }
     }
 
-    // Classify the request using Gemini AI
-    const classification = await classifyMaintenanceRequest(description)
+    const finalImageUrl = savedImageUrls.length > 0 ? JSON.stringify(savedImageUrls) : null;
+
+    // Classify the request using Gemini AI with images
+    const classification = await classifyMaintenanceRequest(description, validImagesToProcess)
 
     const requestId = generateId()
     
@@ -67,7 +74,7 @@ export async function POST(req: NextRequest) {
       classification.summary,
       classification.actionSteps,
       classification.estimatedCost,
-      imageUrl || null
+      finalImageUrl
     )
 
     // Create a notification for the tenant
