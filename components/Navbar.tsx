@@ -103,30 +103,40 @@ export default function Navbar() {
                     </div>
                     <div>
                       <h4 className="text-sm font-bold text-white font-prompt">Dr. Mohamed Samir Hassan</h4>
-                      <p className="text-[10.5px] text-[var(--primary-300)] font-medium font-prompt mt-0.5">AI & Innovation Manager (PhD R)</p>
+                      <p className="text-[10.5px] text-[var(--primary-300)] font-medium font-prompt mt-0.5">Principal AI Solutions Architect (PhD R)</p>
                     </div>
                   </div>
 
                   {/* Expertise Brief */}
                   <div className="space-y-3 mb-5">
                     <h5 className="text-[11px] font-bold text-[var(--neutral-400)] uppercase tracking-wider font-prompt">Core Expertise</h5>
-                    <ul className="space-y-2 text-xs text-[var(--foreground)]">
-                      <li className="flex items-start gap-2">
-                        <span className="text-[var(--primary-400)] mt-0.5 font-bold">⚡</span>
+                    <ul className="space-y-2.5 text-xs text-[var(--foreground)]">
+                      <li className="flex items-start gap-2.5">
+                        <svg className="w-4 h-4 text-[var(--primary-400)] mt-0.5 shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                        </svg>
                         <div>
-                          <strong className="text-white">AI & LLM Integration:</strong> Building intelligent agents (Gemini), NLP triage, & automated reasoning.
+                          <strong className="text-white">AI & Agentic Systems:</strong> Deep Learning, LLMs, and <strong className="text-[var(--primary-300)]">MSHR++</strong> SLM architecture.
                         </div>
                       </li>
-                      <li className="flex items-start gap-2">
-                        <span className="text-[var(--primary-400)] mt-0.5 font-bold">🛠️</span>
+                      <li className="flex items-start gap-2.5">
+                        <svg className="w-4 h-4 text-[var(--primary-400)] mt-0.5 shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <circle cx="12" cy="12" r="10"></circle>
+                          <line x1="2" y1="12" x2="22" y2="12"></line>
+                          <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                        </svg>
                         <div>
-                          <strong className="text-white">Next-Gen Architecture:</strong> Building scalable SaaS architectures (Next.js, Prisma, cloud platforms).
+                          <strong className="text-white">Cloud & Web Solutions:</strong> Next.js, FastAPI, Azure ML, Docker, and Zoho migrations.
                         </div>
                       </li>
-                      <li className="flex items-start gap-2">
-                        <span className="text-[var(--primary-400)] mt-0.5 font-bold">💡</span>
+                      <li className="flex items-start gap-2.5">
+                        <svg className="w-4 h-4 text-[var(--primary-400)] mt-0.5 shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                          <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                          <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                        </svg>
                         <div>
-                          <strong className="text-white">Innovation Strategy:</strong> Translating deep research into high-value commercial tech products.
+                          <strong className="text-white">Immersive Tech:</strong> VR, AR, XR, 3D Metaverse engines, and Hologram systems.
                         </div>
                       </li>
                     </ul>
@@ -135,7 +145,7 @@ export default function Navbar() {
                   {/* Quick Actions / Links */}
                   <div className="grid grid-cols-2 gap-2 pt-2 border-t border-[rgba(255,255,255,0.05)]">
                     <a 
-                      href="https://github.com/ahmedahmed20008669"
+                      href="https://github.com/MohamedSamirHassanPhD"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-gradient-to-r from-[var(--primary-600)] to-[var(--primary-500)] text-white text-xs font-bold hover:from-[var(--primary-500)] hover:to-[var(--primary-400)] transition-all font-prompt shadow-sm text-center"
@@ -229,7 +239,7 @@ export default function Navbar() {
                 </div>
                 <div className="flex flex-col">
                   <span className="text-sm font-semibold text-white">Mohamed Samir Hassan</span>
-                  <span className="text-xs text-[var(--neutral-400)] font-prompt">AI & Innovation Manager, PhD R</span>
+                  <span className="text-xs text-[var(--neutral-400)] font-prompt">Principal AI Solutions Architect, PhD R</span>
                 </div>
               </div>
 
@@ -237,16 +247,16 @@ export default function Navbar() {
               <div className="bg-[rgba(255,255,255,0.02)] border border-[rgba(255,255,255,0.04)] rounded-xl p-3 mb-4 space-y-2">
                 <p className="text-[10px] text-[var(--primary-300)] font-bold uppercase tracking-wider font-prompt">Core Expertise</p>
                 <div className="text-[11px] text-[var(--neutral-300)] space-y-1.5 leading-relaxed">
-                  <p>• <strong className="text-white">AI/LLM Integration:</strong> Gemini API, NLP triage agents</p>
-                  <p>• <strong className="text-white">Architectures:</strong> Next.js, Prisma, Cloud SaaS scaling</p>
-                  <p>• <strong className="text-white">Research:</strong> Translating research to commercial value</p>
+                  <p>• <strong className="text-white">AI & Agents:</strong> LLMs, ML/DL, MSHR++ (SLMs)</p>
+                  <p>• <strong className="text-white">Web & Cloud:</strong> Next.js, FastAPI, Azure Functions</p>
+                  <p>• <strong className="text-white">Immersive:</strong> VR/AR/XR, 3D Metaverse engines</p>
                 </div>
               </div>
 
               {/* Mobile Links */}
               <div className="grid grid-cols-2 gap-2 px-2">
                 <a 
-                  href="https://github.com/ahmedahmed20008669"
+                  href="https://github.com/MohamedSamirHassanPhD"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center justify-center gap-1 py-2 rounded-lg bg-[var(--primary-600)] text-white text-xs font-semibold hover:bg-[var(--primary-500)] text-center font-prompt"
