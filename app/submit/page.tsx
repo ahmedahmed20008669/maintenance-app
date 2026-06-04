@@ -30,11 +30,13 @@ function SubmitForm() {
     imageUrl: "",
   });
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
+  const processFile = (file: File) => {
+    if (!file.type.startsWith("image/")) {
+      addToast({ type: "error", title: "Invalid File", message: "Please upload an image file." });
+      return;
+    }
     // Client-side optimization using Canvas
     const reader = new FileReader();
     reader.onload = (event) => {
@@ -65,12 +67,36 @@ function SubmitForm() {
 
         // Convert to WebP Base64 (highly optimized)
         const base64Str = canvas.toDataURL("image/webp", 0.7);
-        setFormData({ ...formData, imageUrl: base64Str });
+        setFormData((prev) => ({ ...prev, imageUrl: base64Str }));
         setImagePreview(base64Str);
       };
       img.src = event.target?.result as string;
     };
     reader.readAsDataURL(file);
+  };
+
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) processFile(file);
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+    const file = e.dataTransfer.files?.[0];
+    if (file) {
+      processFile(file);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -204,7 +230,12 @@ function SubmitForm() {
           <label className="block text-sm font-medium text-[var(--neutral-300)] mb-2">
             Attach a Photo (Optional)
           </label>
-          <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-[var(--neutral-700)] border-dashed rounded-xl hover:border-[var(--primary-500)] transition-colors bg-[var(--neutral-800)]">
+          <div 
+            onDragOver={handleDragOver}
+            onDragLeave={handleDragLeave}
+            onDrop={handleDrop}
+            className={`mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-dashed rounded-xl transition-colors ${isDragging ? "border-[var(--primary-400)] bg-[rgba(0,153,173,0.1)]" : "border-[var(--neutral-700)] hover:border-[var(--primary-500)] bg-[var(--neutral-800)]"}`}
+          >
             <div className="space-y-1 text-center">
               {imagePreview ? (
                 <div className="relative inline-block">
