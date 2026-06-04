@@ -65,7 +65,12 @@ export default function Navbar() {
               })}
             </div>
 
-            <div className="flex items-center gap-2 pl-3 border-l border-[rgba(255,255,255,0.15)]">
+            <a 
+              href="https://github.com/ahmedahmed20008669"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 pl-3 border-l border-[rgba(255,255,255,0.15)] hover:opacity-80 transition-opacity"
+            >
               <div className="relative w-9 h-9 rounded-full overflow-hidden border-2 border-[var(--primary-400)] shadow-sm">
                 <img 
                   src="/profile-pic.png" 
@@ -77,18 +82,23 @@ export default function Navbar() {
                 <span className="text-xs font-semibold text-white leading-none">M. Samir</span>
                 <span className="text-[10px] text-[var(--neutral-400)] leading-none mt-0.5 font-medium">PhD, R</span>
               </div>
-            </div>
+            </a>
           </div>
 
           {/* Mobile Profile & Toggle */}
           <div className="flex md:hidden items-center gap-3">
-            <div className="w-8 h-8 rounded-full overflow-hidden border border-[var(--primary-400)]">
+            <a 
+              href="https://github.com/ahmedahmed20008669"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-8 h-8 rounded-full overflow-hidden border border-[var(--primary-400)] hover:opacity-80 transition-opacity"
+            >
               <img 
                 src="/profile-pic.png" 
                 alt="Mohamed Samir Hassan" 
                 className="w-full h-full object-cover"
               />
-            </div>
+            </a>
             <button
               onClick={() => setMobileOpen(!mobileOpen)}
               className="text-[var(--neutral-400)] hover:text-white p-2 rounded-lg hover:bg-[rgba(255,255,255,0.05)] transition-colors"
@@ -137,7 +147,12 @@ export default function Navbar() {
               );
             })}
 
-            <div className="pt-4 mt-2 border-t border-[rgba(255,255,255,0.08)] flex items-center gap-3 px-4 pb-2">
+            <a 
+              href="https://github.com/ahmedahmed20008669"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="pt-4 mt-2 border-t border-[rgba(255,255,255,0.08)] flex items-center gap-3 px-4 pb-2 hover:opacity-80 transition-opacity"
+            >
               <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-[var(--primary-400)] shrink-0">
                 <img 
                   src="/profile-pic.png" 
@@ -149,7 +164,7 @@ export default function Navbar() {
                 <span className="text-sm font-semibold text-white">Mohamed Samir Hassan</span>
                 <span className="text-xs text-[var(--neutral-400)]">AI & Innovation Manager, PhD R</span>
               </div>
-            </div>
+            </a>
           </div>
         </div>
       )}
