@@ -27,7 +27,7 @@ export default function AboutPage() {
           
           {/* Page Title Header */}
           <div className="mb-12 border-b border-[rgba(255,255,255,0.06)] pb-8 fade-in">
-            <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight mb-3">About Me</h1>
+            <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight mb-3">My Journey</h1>
             <p className="text-[var(--neutral-400)] text-lg max-w-3xl leading-relaxed">
               Dr. Mohamed Samir Hassan — Principal AI Solutions Architect, PhD Researcher, and Metaverse Expert.
             </p>
