@@ -29,7 +29,6 @@ function InfoIcon({ className = "w-4 h-4" }: { className?: string }) {
 
 const navItems = [
   { href: "/", label: "Portfolio", icon: <UserIcon className="w-4 h-4" /> },
-  { href: "/about", label: "My Journey", icon: <InfoIcon className="w-4 h-4" /> },
   { href: "/submit", label: "Maintenance Demo", icon: <ToolsIcon className="w-4 h-4" /> },
   { href: "/dashboard", label: "Dashboard", icon: <ChartIcon className="w-4 h-4" /> },
 ];

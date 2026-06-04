@@ -12,6 +12,7 @@
 
 import type { Metadata } from "next";
 import { Poppins, Prompt } from "next/font/google";
+import Link from "next/link";
 import "./globals.css";
 
 const poppinsFont = Poppins({
@@ -58,7 +59,12 @@ export default function RootLayout({
         <div dangerouslySetInnerHTML={{ __html: "<!-- © 2026 Dr. Mohamed Samir Hassan, MSc, PhD R. All rights reserved. Verification Signature: MSH-AI-INNOVATION-MANAGER-2026 -->" }} />
         {children}
         <footer className="mt-auto py-8 border-t border-[rgba(255,255,255,0.03)] bg-[rgba(10,12,30,0.4)] backdrop-blur-sm relative z-10">
-          <div className="max-w-7xl mx-auto px-4 text-center">
+          <div className="max-w-7xl mx-auto px-4 text-center flex flex-col items-center">
+            <div className="mb-4">
+              <Link href="/about" className="text-sm font-semibold text-[var(--primary-300)] hover:text-white transition-colors border-b border-[var(--primary-300)] hover:border-white pb-0.5 font-prompt">
+                My Journey (About Me)
+              </Link>
+            </div>
             <p className="text-xs text-[var(--neutral-400)] leading-relaxed font-prompt">
               Designed & Developed by{" "}
               <span className="text-[var(--primary-300)] font-semibold">
