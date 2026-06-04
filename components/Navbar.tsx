@@ -26,6 +26,7 @@ const navItems = [
 export default function Navbar() {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
 
   return (
     <nav className="glass sticky top-0 z-50 border-b border-[rgba(0,153,173,0.1)]">
@@ -65,40 +66,110 @@ export default function Navbar() {
               })}
             </div>
 
-            <a 
-              href="https://github.com/ahmedahmed20008669"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-2 pl-3 border-l border-[rgba(255,255,255,0.15)] hover:opacity-80 transition-opacity"
-            >
-              <div className="relative w-9 h-9 rounded-full overflow-hidden border-2 border-[var(--primary-400)] shadow-sm">
-                <img 
-                  src="/profile-pic.png" 
-                  alt="Mohamed Samir Hassan" 
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <div className="flex flex-col">
-                <span className="text-xs font-semibold text-white leading-none">M. Samir</span>
-                <span className="text-[10px] text-[var(--neutral-400)] leading-none mt-0.5 font-medium">PhD, R</span>
-              </div>
-            </a>
+            <div className="relative">
+              <button 
+                onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
+                className="flex items-center gap-2 pl-3 border-l border-[rgba(255,255,255,0.15)] hover:opacity-90 transition-opacity focus:outline-none cursor-pointer text-left"
+              >
+                <div className="relative w-9 h-9 rounded-full overflow-hidden border-2 border-[var(--primary-400)] shadow-sm">
+                  <img 
+                    src="/profile-pic.png" 
+                    alt="Mohamed Samir Hassan" 
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-xs font-semibold text-white leading-none flex items-center gap-1">
+                    M. Samir
+                    <svg className={`w-3 h-3 text-[var(--neutral-400)] transition-transform duration-200 ${profileDropdownOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </span>
+                  <span className="text-[10px] text-[var(--neutral-400)] leading-none mt-0.5 font-medium">PhD, R</span>
+                </div>
+              </button>
+
+              {/* Dropdown Menu */}
+              {profileDropdownOpen && (
+                <div className="absolute right-0 mt-3 w-80 rounded-2xl bg-[#090b16]/95 border border-[rgba(0,153,173,0.3)] shadow-2xl p-5 fade-in z-50 text-left backdrop-blur-md">
+                  {/* Header */}
+                  <div className="flex items-center gap-3 border-b border-[rgba(255,255,255,0.08)] pb-4 mb-4">
+                    <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-[var(--primary-400)] shrink-0">
+                      <img 
+                        src="/profile-pic.png" 
+                        alt="Mohamed Samir Hassan" 
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <div>
+                      <h4 className="text-sm font-bold text-white font-prompt">Dr. Mohamed Samir Hassan</h4>
+                      <p className="text-[10.5px] text-[var(--primary-300)] font-medium font-prompt mt-0.5">AI & Innovation Manager (PhD R)</p>
+                    </div>
+                  </div>
+
+                  {/* Expertise Brief */}
+                  <div className="space-y-3 mb-5">
+                    <h5 className="text-[11px] font-bold text-[var(--neutral-400)] uppercase tracking-wider font-prompt">Core Expertise</h5>
+                    <ul className="space-y-2 text-xs text-[var(--foreground)]">
+                      <li className="flex items-start gap-2">
+                        <span className="text-[var(--primary-400)] mt-0.5 font-bold">⚡</span>
+                        <div>
+                          <strong className="text-white">AI & LLM Integration:</strong> Building intelligent agents (Gemini), NLP triage, & automated reasoning.
+                        </div>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span className="text-[var(--primary-400)] mt-0.5 font-bold">🛠️</span>
+                        <div>
+                          <strong className="text-white">Next-Gen Architecture:</strong> Building scalable SaaS architectures (Next.js, Prisma, cloud platforms).
+                        </div>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span className="text-[var(--primary-400)] mt-0.5 font-bold">💡</span>
+                        <div>
+                          <strong className="text-white">Innovation Strategy:</strong> Translating deep research into high-value commercial tech products.
+                        </div>
+                      </li>
+                    </ul>
+                  </div>
+
+                  {/* Quick Actions / Links */}
+                  <div className="grid grid-cols-2 gap-2 pt-2 border-t border-[rgba(255,255,255,0.05)]">
+                    <a 
+                      href="https://github.com/ahmedahmed20008669"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-gradient-to-r from-[var(--primary-600)] to-[var(--primary-500)] text-white text-xs font-bold hover:from-[var(--primary-500)] hover:to-[var(--primary-400)] transition-all font-prompt shadow-sm text-center"
+                    >
+                      <span>GitHub</span>
+                      <span className="text-[10px]">↗</span>
+                    </a>
+                    <a 
+                      href="https://www.linkedin.com/in/mohamedsamirhassan/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center justify-center gap-1.5 py-2.5 rounded-xl glass text-white text-xs font-bold hover:bg-[rgba(255,255,255,0.08)] transition-all font-prompt text-center"
+                    >
+                      <span>LinkedIn</span>
+                      <span className="text-[10px]">↗</span>
+                    </a>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Mobile Profile & Toggle */}
           <div className="flex md:hidden items-center gap-3">
-            <a 
-              href="https://github.com/ahmedahmed20008669"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-8 h-8 rounded-full overflow-hidden border border-[var(--primary-400)] hover:opacity-80 transition-opacity"
+            <button 
+              onClick={() => setMobileOpen(!mobileOpen)}
+              className="w-8 h-8 rounded-full overflow-hidden border border-[var(--primary-400)] hover:opacity-90 transition-opacity focus:outline-none cursor-pointer"
             >
               <img 
                 src="/profile-pic.png" 
                 alt="Mohamed Samir Hassan" 
                 className="w-full h-full object-cover"
               />
-            </a>
+            </button>
             <button
               onClick={() => setMobileOpen(!mobileOpen)}
               className="text-[var(--neutral-400)] hover:text-white p-2 rounded-lg hover:bg-[rgba(255,255,255,0.05)] transition-colors"
@@ -147,24 +218,53 @@ export default function Navbar() {
               );
             })}
 
-            <a 
-              href="https://github.com/ahmedahmed20008669"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="pt-4 mt-2 border-t border-[rgba(255,255,255,0.08)] flex items-center gap-3 px-4 pb-2 hover:opacity-80 transition-opacity"
-            >
-              <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-[var(--primary-400)] shrink-0">
-                <img 
-                  src="/profile-pic.png" 
-                  alt="Mohamed Samir Hassan" 
-                  className="w-full h-full object-cover"
-                />
+            <div className="pt-4 mt-2 border-t border-[rgba(255,255,255,0.08)] px-2 pb-2">
+              <div className="flex items-center gap-3 px-2 mb-3">
+                <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-[var(--primary-400)] shrink-0">
+                  <img 
+                    src="/profile-pic.png" 
+                    alt="Mohamed Samir Hassan" 
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-sm font-semibold text-white">Mohamed Samir Hassan</span>
+                  <span className="text-xs text-[var(--neutral-400)] font-prompt">AI & Innovation Manager, PhD R</span>
+                </div>
               </div>
-              <div className="flex flex-col">
-                <span className="text-sm font-semibold text-white">Mohamed Samir Hassan</span>
-                <span className="text-xs text-[var(--neutral-400)]">AI & Innovation Manager, PhD R</span>
+
+              {/* Mobile Expertise Brief */}
+              <div className="bg-[rgba(255,255,255,0.02)] border border-[rgba(255,255,255,0.04)] rounded-xl p-3 mb-4 space-y-2">
+                <p className="text-[10px] text-[var(--primary-300)] font-bold uppercase tracking-wider font-prompt">Core Expertise</p>
+                <div className="text-[11px] text-[var(--neutral-300)] space-y-1.5 leading-relaxed">
+                  <p>• <strong className="text-white">AI/LLM Integration:</strong> Gemini API, NLP triage agents</p>
+                  <p>• <strong className="text-white">Architectures:</strong> Next.js, Prisma, Cloud SaaS scaling</p>
+                  <p>• <strong className="text-white">Research:</strong> Translating research to commercial value</p>
+                </div>
               </div>
-            </a>
+
+              {/* Mobile Links */}
+              <div className="grid grid-cols-2 gap-2 px-2">
+                <a 
+                  href="https://github.com/ahmedahmed20008669"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center gap-1 py-2 rounded-lg bg-[var(--primary-600)] text-white text-xs font-semibold hover:bg-[var(--primary-500)] text-center font-prompt"
+                >
+                  <span>GitHub</span>
+                  <span>↗</span>
+                </a>
+                <a 
+                  href="https://www.linkedin.com/in/mohamedsamirhassan/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center gap-1 py-2 rounded-lg glass text-white text-xs font-semibold hover:bg-[rgba(255,255,255,0.05)] text-center font-prompt"
+                >
+                  <span>LinkedIn</span>
+                  <span>↗</span>
+                </a>
+              </div>
+            </div>
           </div>
         </div>
       )}
