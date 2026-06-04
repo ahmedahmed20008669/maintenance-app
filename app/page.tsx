@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Image from "next/image";
+import InteractiveDemo from "@/components/InteractiveDemo";
 
 export default function Home() {
   return (
@@ -102,13 +103,56 @@ export default function Home() {
                 </p>
 
                 <div className="grid grid-cols-2 gap-6 mb-10">
-                  <div className="glass-light p-4 rounded-xl">
-                    <div className="text-[var(--primary-400)] text-2xl mb-2">🤖</div>
+                  <div className="glass-light p-4 rounded-xl flex flex-col items-start">
+                    <svg 
+                      xmlns="http://www.w3.org/2000/svg" 
+                      viewBox="0 0 24 24" 
+                      fill="none" 
+                      stroke="url(#primary-gradient)" 
+                      strokeWidth="2" 
+                      strokeLinecap="round" 
+                      strokeLinejoin="round" 
+                      className="w-6 h-6 mb-2"
+                    >
+                      <defs>
+                        <linearGradient id="primary-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                          <stop offset="0%" stopColor="var(--primary-400)" />
+                          <stop offset="100%" stopColor="var(--primary-200)" />
+                        </linearGradient>
+                      </defs>
+                      <path d="M12 5a3 3 0 1 0-5.997.125 4 4 0 0 0-2.526 5.77 4 4 0 0 0 .556 6.588A4 4 0 1 0 12 18Z" />
+                      <path d="M12 5a3 3 0 1 1 5.997.125 4 4 0 0 1 2.526 5.77 4 4 0 0 1-.556 6.588A4 4 0 1 1 12 18Z" />
+                      <path d="M12 5v14" />
+                      <path d="M12 9h4a2 2 0 0 0 2-2v0" />
+                      <path d="M12 15h4a2 2 0 0 1 2 2v0" />
+                      <path d="M12 9H8a2 2 0 0 1-2-2v0" />
+                      <path d="M12 15H8a2 2 0 0 0-2 2v0" />
+                    </svg>
                     <div className="font-bold text-white mb-1 font-prompt">AI Triage</div>
                     <div className="text-xs text-[var(--foreground)]">Auto-categorizes issues using NLP</div>
                   </div>
-                  <div className="glass-light p-4 rounded-xl">
-                    <div className="text-[var(--primary-400)] text-2xl mb-2">⚡</div>
+                  <div className="glass-light p-4 rounded-xl flex flex-col items-start">
+                    <svg 
+                      xmlns="http://www.w3.org/2000/svg" 
+                      viewBox="0 0 24 24" 
+                      fill="none" 
+                      stroke="url(#primary-gradient-2)" 
+                      strokeWidth="2" 
+                      strokeLinecap="round" 
+                      strokeLinejoin="round" 
+                      className="w-6 h-6 mb-2"
+                    >
+                      <defs>
+                        <linearGradient id="primary-gradient-2" x1="0%" y1="0%" x2="100%" y2="100%">
+                          <stop offset="0%" stopColor="var(--primary-400)" />
+                          <stop offset="100%" stopColor="var(--primary-200)" />
+                        </linearGradient>
+                      </defs>
+                      <circle cx="6" cy="19" r="3" />
+                      <path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15" />
+                      <circle cx="18" cy="5" r="3" />
+                      <path d="M14 8l3-3-3-3" />
+                    </svg>
                     <div className="font-bold text-white mb-1 font-prompt">Smart Routing</div>
                     <div className="text-xs text-[var(--foreground)]">Assigns directly to the right provider</div>
                   </div>
@@ -128,41 +172,7 @@ export default function Home() {
                     Admin Dashboard
                   </Link>
                 </div>
-              </div>
-
-              <div className="relative rounded-2xl overflow-hidden glass border border-[rgba(255,255,255,0.1)] shadow-2xl aspect-[4/3]">
-                {/* Mockup UI representation */}
-                <div className="absolute top-0 w-full h-8 bg-[var(--neutral-900)] border-b border-[rgba(255,255,255,0.05)] flex items-center px-4 gap-2">
-                  <div className="w-3 h-3 rounded-full bg-red-500 opacity-80"></div>
-                  <div className="w-3 h-3 rounded-full bg-yellow-500 opacity-80"></div>
-                  <div className="w-3 h-3 rounded-full bg-green-500 opacity-80"></div>
-                </div>
-                <div className="pt-8 p-6 h-full bg-[var(--neutral-950)] flex flex-col">
-                  <div className="h-10 w-48 bg-[rgba(255,255,255,0.05)] rounded-lg mb-8 animate-pulse"></div>
-                  <div className="flex gap-4 mb-6">
-                    <div className="h-24 flex-1 bg-[rgba(255,255,255,0.02)] rounded-xl border border-[rgba(255,255,255,0.05)]"></div>
-                    <div className="h-24 flex-1 bg-[rgba(255,255,255,0.02)] rounded-xl border border-[rgba(255,255,255,0.05)]"></div>
-                    <div className="h-24 flex-1 bg-[rgba(255,255,255,0.02)] rounded-xl border border-[rgba(255,255,255,0.05)]"></div>
-                  </div>
-                  <div className="flex-1 bg-[rgba(255,255,255,0.02)] rounded-xl border border-[rgba(255,255,255,0.05)] p-4">
-                    <div className="h-6 w-32 bg-[rgba(255,255,255,0.05)] rounded mb-4"></div>
-                    <div className="space-y-3">
-                      <div className="h-12 w-full bg-[rgba(255,255,255,0.03)] rounded flex items-center px-4">
-                        <div className="h-4 w-4 rounded-full bg-green-500 mr-4"></div>
-                        <div className="h-3 w-1/3 bg-[rgba(255,255,255,0.05)] rounded"></div>
-                      </div>
-                      <div className="h-12 w-full bg-[rgba(255,255,255,0.03)] rounded flex items-center px-4">
-                        <div className="h-4 w-4 rounded-full bg-yellow-500 mr-4"></div>
-                        <div className="h-3 w-1/2 bg-[rgba(255,255,255,0.05)] rounded"></div>
-                      </div>
-                      <div className="h-12 w-full bg-[rgba(255,255,255,0.03)] rounded flex items-center px-4">
-                        <div className="h-4 w-4 rounded-full bg-red-500 mr-4"></div>
-                        <div className="h-3 w-1/4 bg-[rgba(255,255,255,0.05)] rounded"></div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+                           <InteractiveDemo />   </div>
 
             </div>
           </div>

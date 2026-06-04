@@ -3,11 +3,12 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
+import { UserIcon, ToolsIcon, ChartIcon } from "./ui";
 
 const navItems = [
-  { href: "/", label: "Portfolio", icon: "👤" },
-  { href: "/submit", label: "Maintenance Demo", icon: "🛠️" },
-  { href: "/dashboard", label: "Dashboard", icon: "📊" },
+  { href: "/", label: "Portfolio", icon: <UserIcon className="w-4 h-4" /> },
+  { href: "/submit", label: "Maintenance Demo", icon: <ToolsIcon className="w-4 h-4" /> },
+  { href: "/dashboard", label: "Dashboard", icon: <ChartIcon className="w-4 h-4" /> },
 ];
 
 export default function Navbar() {

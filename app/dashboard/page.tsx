@@ -10,6 +10,12 @@ import {
   CategoryIcon,
   LoadingSpinner,
   EmptyState,
+  UserIcon,
+  HomeIcon,
+  CalendarIcon,
+  RefreshIcon,
+  InboxIcon,
+  DollarIcon,
 } from "@/components/ui";
 
 interface Request {
@@ -237,10 +243,11 @@ function DashboardContent() {
           </select>
           <button
             onClick={fetchRequests}
-            className="px-4 py-2.5 rounded-lg bg-[var(--neutral-800)] border border-[var(--neutral-700)] text-[var(--neutral-400)] hover:text-white hover:border-[var(--primary-500)] transition-all text-sm"
+            className="px-4 py-2.5 rounded-lg bg-[var(--neutral-800)] border border-[var(--neutral-700)] text-[var(--neutral-400)] hover:text-white hover:border-[var(--primary-500)] transition-all text-sm flex items-center gap-2"
             title="Refresh"
           >
-            🔄 Refresh
+            <RefreshIcon className="w-4 h-4" />
+            <span>Refresh</span>
           </button>
         </div>
       </div>
@@ -252,7 +259,7 @@ function DashboardContent() {
           {filtered.length === 0 ? (
             <div className="glass rounded-xl">
               <EmptyState
-                icon="📭"
+                icon={<InboxIcon className="w-12 h-12 stroke-[1.5]" />}
                 title="No Requests Found"
                 description="No maintenance requests match your current filters. Try adjusting your search or submit a new request."
               />
@@ -283,13 +290,19 @@ function DashboardContent() {
                         <SeverityIndicator severity={request.severity} />
                         <PriorityBadge priority={request.priority} />
                       </div>
-                      <div className="flex items-center gap-4 text-xs text-[var(--neutral-500)]">
-                        <span>👤 {request.tenantName}</span>
+                      <div className="flex items-center gap-4 text-xs text-[var(--neutral-500)] flex-wrap">
+                        <span className="flex items-center gap-1">
+                          <UserIcon className="w-3.5 h-3.5" />
+                          {request.tenantName}
+                        </span>
                         {request.tenantUnit && (
-                          <span>🏠 {request.tenantUnit}</span>
+                          <span className="flex items-center gap-1">
+                            <HomeIcon className="w-3.5 h-3.5" />
+                            {request.tenantUnit}
+                          </span>
                         )}
-                        <span>
-                          📅{" "}
+                        <span className="flex items-center gap-1">
+                          <CalendarIcon className="w-3.5 h-3.5" />
                           {new Date(request.createdAt).toLocaleDateString()}
                         </span>
                       </div>
@@ -422,7 +435,7 @@ function DashboardContent() {
               {/* Estimated Cost */}
               {selectedRequest.estimatedCost && (
                 <div className="flex items-center gap-3 bg-[rgba(245,158,11,0.08)] rounded-xl p-4 border border-[rgba(245,158,11,0.15)]">
-                  <span className="text-xl">💰</span>
+                  <DollarIcon className="w-5 h-5 text-[#fbbf24] shrink-0" />
                   <span className="text-sm text-[#fbbf24] font-semibold">
                     {selectedRequest.estimatedCost}
                   </span>

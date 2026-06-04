@@ -10,6 +10,7 @@ import {
   PriorityBadge,
   CategoryIcon,
   LoadingSpinner,
+  DollarIcon,
 } from "@/components/ui";
 
 interface RequestData {
@@ -71,8 +72,10 @@ function ConfirmationContent() {
     <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       {/* Success Header */}
       <div className="text-center mb-10 fade-in">
-        <div className="w-16 h-16 rounded-2xl bg-[rgba(16,185,129,0.15)] flex items-center justify-center mx-auto mb-5">
-          <span className="text-3xl">✅</span>
+        <div className="w-16 h-16 rounded-2xl bg-[rgba(16,185,129,0.15)] flex items-center justify-center mx-auto mb-5 text-[var(--success-500)]">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="w-8 h-8">
+            <polyline points="20 6 9 17 4 12" />
+          </svg>
         </div>
         <h1 className="text-3xl font-extrabold text-white mb-3">
           Request Submitted Successfully
@@ -157,7 +160,7 @@ function ConfirmationContent() {
           {/* Estimated Cost */}
           {request.estimatedCost && (
             <div className="flex items-center gap-3 bg-[rgba(245,158,11,0.08)] rounded-xl p-4 border border-[rgba(245,158,11,0.15)]">
-              <span className="text-xl">💰</span>
+              <DollarIcon className="w-5 h-5 text-[#fbbf24] shrink-0" />
               <div>
                 <p className="text-xs text-[var(--neutral-500)] font-semibold uppercase">
                   Estimated Cost

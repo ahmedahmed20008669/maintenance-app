@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, ReactNode } from "react";
 import Navbar from "@/components/Navbar";
-import { LoadingSpinner, EmptyState } from "@/components/ui";
+import { LoadingSpinner, EmptyState, BellIcon, UserIcon } from "@/components/ui";
 
 interface Notification {
   id: string;
@@ -16,20 +16,35 @@ interface Notification {
 
 const typeConfig: Record<
   string,
-  { icon: string; label: string; color: string }
+  { icon: ReactNode; label: string; color: string }
 > = {
   CONFIRMATION: {
-    icon: "✅",
+    icon: (
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
+        <polyline points="20 6 9 17 4 12" />
+      </svg>
+    ),
     label: "Confirmation",
     color: "text-[#6ee7b7] bg-[rgba(16,185,129,0.1)]",
   },
   STATUS_UPDATE: {
-    icon: "🔄",
+    icon: (
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
+        <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+        <path d="M3 3v5h5" />
+        <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16" />
+        <path d="M16 16h5v5" />
+      </svg>
+    ),
     label: "Status Update",
     color: "text-[#a5b4fc] bg-[rgba(99,102,241,0.1)]",
   },
   ASSIGNMENT: {
-    icon: "👷",
+    icon: (
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
+        <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" />
+      </svg>
+    ),
     label: "Assignment",
     color: "text-[#fbbf24] bg-[rgba(245,158,11,0.1)]",
   },
@@ -119,7 +134,7 @@ export default function NotificationsPage() {
           ) : notifications.length === 0 ? (
             <div className="glass rounded-xl">
               <EmptyState
-                icon="🔔"
+                icon={<BellIcon className="w-12 h-12 stroke-[1.5]" />}
                 title="No Notifications"
                 description="You don't have any notifications yet. Submit a maintenance request to see automated updates here."
               />
@@ -160,7 +175,10 @@ export default function NotificationsPage() {
                           {notif.message}
                         </p>
                         <div className="flex items-center gap-4 text-xs text-[var(--neutral-500)]">
-                          <span>👤 {notif.recipient}</span>
+                          <span className="flex items-center gap-1">
+                            <UserIcon className="w-3.5 h-3.5" />
+                            {notif.recipient}
+                          </span>
                           <span>
                             {new Date(notif.createdAt).toLocaleString()}
                           </span>

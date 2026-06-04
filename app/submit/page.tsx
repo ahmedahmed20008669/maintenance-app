@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import { ToastProvider, useToast } from "@/components/Toast";
-import { LoadingSpinner } from "@/components/ui";
+import { LoadingSpinner, RobotIcon, RocketIcon } from "@/components/ui";
 
 function SubmitForm() {
   const router = useRouter();
@@ -250,9 +250,9 @@ function SubmitForm() {
             placeholder="Tell us what's wrong in your own words..."
             className="w-full px-4 py-3 rounded-xl bg-[var(--neutral-800)] border border-[var(--neutral-700)] text-white placeholder-[var(--neutral-500)] text-sm resize-none leading-relaxed"
           />
-          <p className="text-xs text-[var(--neutral-500)] mt-2 flex items-center gap-1">
-            <span>🤖</span> Our AI will analyze your description to
-            classify and prioritize the request.
+          <p className="text-xs text-[var(--neutral-500)] mt-2 flex items-center gap-1.5">
+            <RobotIcon className="w-4 h-4 text-[var(--primary-400)] shrink-0" />
+            <span>Our AI will analyze your description to classify and prioritize the request.</span>
           </p>
         </div>
 
@@ -290,7 +290,7 @@ function SubmitForm() {
             </>
           ) : (
             <>
-              <span>🚀</span>
+              <RocketIcon className="w-5 h-5 text-white" />
               Submit Request
             </>
           )}
