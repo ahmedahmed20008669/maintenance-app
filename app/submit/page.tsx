@@ -278,23 +278,36 @@ function SubmitForm() {
         </div>
 
         {/* Submit Button */}
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full py-4 rounded-xl bg-gradient-to-r from-[var(--primary-600)] to-[var(--primary-500)] text-white font-semibold text-base hover:from-[var(--primary-500)] hover:to-[var(--primary-400)] transition-all duration-300 shadow-lg shadow-[rgba(99,102,241,0.3)] hover:shadow-[rgba(99,102,241,0.5)] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3"
-        >
-          {loading ? (
-            <>
-              <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-              AI is analyzing your request...
-            </>
-          ) : (
-            <>
-              <RocketIcon className="w-5 h-5 text-white" />
-              Submit Request
-            </>
-          )}
-        </button>
+        <div className="flex justify-center mt-8 w-full h-14">
+          <button
+            type="submit"
+            disabled={loading}
+            className={`relative flex items-center justify-center h-14 rounded-xl text-white font-semibold text-base transition-all duration-500 ease-[cubic-bezier(0.68,-0.55,0.265,1.55)] overflow-hidden group ${
+              loading
+                ? "w-14 rounded-full bg-white shadow-md disabled:cursor-not-allowed cursor-wait border border-[var(--primary-600)]"
+                : "w-full bg-[var(--primary-600)] hover:bg-[var(--primary-500)] shadow-md border border-[var(--primary-700)] cursor-pointer"
+            }`}
+          >
+            {loading ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img 
+                src="/adeer-logo.png" 
+                alt="Processing..." 
+                className="w-10 h-auto object-contain animate-pulse absolute drop-shadow-md" 
+              />
+            ) : (
+              <div className="flex items-center justify-center gap-3 absolute w-full transition-transform duration-300 group-hover:scale-105">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img 
+                  src="/adeer-logo.png" 
+                  alt="Adeer Logo" 
+                  className="h-8 w-auto object-contain drop-shadow-sm brightness-0 invert" 
+                />
+                <span>Submit Request</span>
+              </div>
+            )}
+          </button>
+        </div>
       </form>
     </div>
   );

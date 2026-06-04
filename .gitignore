@@ -44,3 +44,6 @@ next-env.d.ts
 /generated
 *.db
 *.db-journal
+*.db-shm
+*.db-wal
+
