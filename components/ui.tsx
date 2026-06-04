@@ -1,3 +1,15 @@
+/**
+ * @license
+ * © 2026 Dr. Mohamed Samir Hassan, MSc, PhD R. All rights reserved.
+ * 
+ * This code is part of the technical challenge submission for the position of
+ * AI and Innovation Manager. Unauthorized copying, modification, distribution,
+ * or use of this source code or any portion of it without the express written
+ * permission of Dr. Mohamed Samir Hassan is strictly prohibited.
+ * 
+ * Digital Signature / Verification: mohamedsamirhassan-portfolio-verification-2026
+ */
+
 import { ReactNode } from "react";
 
 // ===== SYSTEM THEMED SVG ICONS =====

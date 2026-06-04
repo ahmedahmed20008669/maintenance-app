@@ -1,3 +1,15 @@
+/**
+ * @license
+ * © 2026 Dr. Mohamed Samir Hassan, MSc, PhD R. All rights reserved.
+ * 
+ * This code is part of the technical challenge submission for the position of
+ * AI and Innovation Manager. Unauthorized copying, modification, distribution,
+ * or use of this source code or any portion of it without the express written
+ * permission of Dr. Mohamed Samir Hassan is strictly prohibited.
+ * 
+ * Digital Signature / Verification: mohamedsamirhassan-portfolio-verification-2026
+ */
+
 import type { Metadata } from "next";
 import { Poppins, Prompt } from "next/font/google";
 import "./globals.css";
@@ -25,6 +37,10 @@ export const metadata: Metadata = {
     "automation",
     "tenant requests",
   ],
+  authors: [{ name: "Dr. Mohamed Samir Hassan, MSc, PhD R", url: "https://www.linkedin.com/in/mohamedsamirhassan/" }],
+  other: {
+    copyright: "© 2026 Dr. Mohamed Samir Hassan. All rights reserved. Verification signature: MSH-AI-INNOVATION-MANAGER-2026",
+  },
 };
 
 export default function RootLayout({
@@ -34,7 +50,28 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${poppinsFont.variable} ${promptFont.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col gradient-bg">{children}</body>
+      <body 
+        className="min-h-full flex flex-col gradient-bg"
+        data-author="Dr. Mohamed Samir Hassan"
+        data-signature="MSH-AI-INNOVATION-MANAGER-2026"
+      >
+        <div dangerouslySetInnerHTML={{ __html: "<!-- © 2026 Dr. Mohamed Samir Hassan, MSc, PhD R. All rights reserved. Verification Signature: MSH-AI-INNOVATION-MANAGER-2026 -->" }} />
+        {children}
+        <footer className="mt-auto py-8 border-t border-[rgba(255,255,255,0.03)] bg-[rgba(10,12,30,0.4)] backdrop-blur-sm relative z-10">
+          <div className="max-w-7xl mx-auto px-4 text-center">
+            <p className="text-xs text-[var(--neutral-400)] leading-relaxed font-prompt">
+              Designed & Developed by{" "}
+              <span className="text-[var(--primary-300)] font-semibold">
+                Dr. Mohamed Samir Hassan, MSc, PhD R
+              </span>{" "}
+              — AI and Innovation Manager Portfolio & MaintenanceAI Portal.
+            </p>
+            <p className="text-[10px] text-[var(--neutral-600)] mt-2 font-mono">
+              © 2026 All rights reserved. Protected by digital signature: MSH-AI-INNOVATION-MANAGER-2026
+            </p>
+          </div>
+        </footer>
+      </body>
     </html>
   );
 }

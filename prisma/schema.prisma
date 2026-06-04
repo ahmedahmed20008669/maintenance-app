@@ -1,3 +1,8 @@
+// © 2026 Dr. Mohamed Samir Hassan, MSc, PhD R. All rights reserved.
+// This code is part of the technical challenge submission for the position of
+// AI and Innovation Manager. Unauthorized copying, distribution, or use is prohibited.
+// Digital Signature / Verification: mohamedsamirhassan-portfolio-verification-2026
+
 generator client {
   provider = "prisma-client"
   output   = "../generated/client"
