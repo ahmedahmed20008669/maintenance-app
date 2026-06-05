@@ -47,9 +47,8 @@ class NumberedCanvas(canvas.Canvas):
             self.setFillColor(COLOR_DARK_BG)
             self.rect(0, 0, 8.5 * inch, 11 * inch, fill=True, stroke=False)
             
-            # Teal stripes at top and bottom
+            # Teal stripe at top only
             self.setFillColor(COLOR_TEAL)
-            self.rect(0, 0, 8.5 * inch, 0.25 * inch, fill=True, stroke=False)
             self.rect(0, 10.75 * inch, 8.5 * inch, 0.25 * inch, fill=True, stroke=False)
             self.restoreState()
             return
@@ -213,13 +212,13 @@ def create_specs_pdf():
     add_heading("4.1 Tenant Portal Authentication", 2)
     add_para("The Tenant Portal includes validation on both the client and server. If a tenant's session becomes invalid or expires, the system automatically redirects them to the login screen.")
     
-    add_img("e792f404-289a-4459-891b-bcff14c38fb2.png", 4.5, 3.4)
+    add_img("tenant_login.png", 4.5, 3.4)
     Story.append(PageBreak())
 
     add_heading("4.2 Ticket Submission Form", 2)
     add_para("The submit form features templates that allow tenants to quickly auto-populate common issue descriptions. The description is processed by the AI pipeline.")
     
-    add_img("Screenshot 2026-06-05 190116.png", 4.5, 2.15)
+    add_img("tenant_submit_form.png", 4.5, 2.15)
     
     add_heading("4.3 Automated AI Classification & Triage Pipeline", 2)
     add_para("When a request is submitted, it is processed by the Gemini AI pipeline. The text description and any attached photos are analyzed to determine the ticket's category, urgency rating, estimated repair costs, and a structured set of repair steps.")
@@ -240,18 +239,18 @@ Respond ONLY with a valid JSON object:
     Story.append(PageBreak())
 
     add_para("The property manager sees this metadata inside the ticket sidebar:")
-    add_img("Screenshot 2026-06-05 190132.png", 4.5, 2.15)
+    add_img("admin_ticket_details_sidebar.png", 4.5, 2.15)
     
     add_heading("4.4 Operations Control Dashboard", 2)
     add_para("The Operations Hub dashboard provides property managers with statistical counters, global search functionality, status filters, and priority tags to help manage incoming requests.")
     
-    add_img("Screenshot 2026-06-05 190101.png", 4.5, 2.15)
+    add_img("admin_dashboard_overview.png", 4.5, 2.15)
     Story.append(PageBreak())
 
     add_heading("4.5 Live Client-Side Synchronization (SSE)", 2)
     add_para("The Tenant Portal dashboard establishes a Server-Sent Events (SSE) connection to listen for updates. When a property manager updates a ticket's status, the change is streamed to the tenant's browser, updating the dashboard instantly without requiring a page reload.")
     
-    add_img("Screenshot 2026-06-05 190208.png", 4.5, 2.15)
+    add_img("tenant_dashboard_sse.png", 4.5, 2.15)
     Story.append(Spacer(1, 10))
 
     # --- Section 5: Key Engineering Solutions ---

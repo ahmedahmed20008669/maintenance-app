@@ -47,9 +47,8 @@ class NumberedCanvas(canvas.Canvas):
             self.setFillColor(COLOR_DARK_BG)
             self.rect(0, 0, 8.5 * inch, 11 * inch, fill=True, stroke=False)
             
-            # Teal stripes at top and bottom
+            # Teal stripe at top only
             self.setFillColor(COLOR_TEAL)
-            self.rect(0, 0, 8.5 * inch, 0.25 * inch, fill=True, stroke=False)
             self.rect(0, 10.75 * inch, 8.5 * inch, 0.25 * inch, fill=True, stroke=False)
             self.restoreState()
             return
