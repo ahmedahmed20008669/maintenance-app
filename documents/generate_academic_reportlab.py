@@ -5,6 +5,13 @@ from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, PageBreak, 
 from reportlab.lib.enums import TA_JUSTIFY, TA_LEFT
 from reportlab.lib.colors import HexColor
 
+def draw_cover_border(canvas, doc):
+    canvas.saveState()
+    canvas.setStrokeColor(HexColor('#0099AD'))
+    canvas.setLineWidth(3)
+    canvas.rect(20, 20, 572, 752)
+    canvas.restoreState()
+
 def add_page_border_and_logo(canvas, doc):
     canvas.saveState()
     canvas.setStrokeColor(HexColor('#0099AD'))
@@ -12,12 +19,13 @@ def add_page_border_and_logo(canvas, doc):
     canvas.rect(20, 20, 572, 752)
     logo_path = r"../maintenance-app/public/adeer-logo.png"
     if os.path.exists(logo_path):
-        canvas.drawImage(logo_path, 470, 710, width=90, preserveAspectRatio=True, mask='auto')
+        # Draw smaller logo, positioned safely below the top page border (772) and above the text margin
+        canvas.drawImage(logo_path, 500, 722, width=60, preserveAspectRatio=True, mask='auto')
     canvas.restoreState()
 
 def create_academic_pdf():
     doc = SimpleDocTemplate("MaintenanceAI_Academic_Study_Mohamed_Samir_Hassan_Final.pdf", pagesize=letter,
-                            rightMargin=50, leftMargin=50, topMargin=80, bottomMargin=50)
+                            rightMargin=50, leftMargin=50, topMargin=95, bottomMargin=50)
     styles = getSampleStyleSheet()
     
     # Custom Styles
@@ -191,7 +199,7 @@ def create_academic_pdf():
     add_bullet("TOGAF Standard, 10th Edition (2022). The Open Group.")
     add_bullet("Google Cloud (2025). Gemini 2.0 Developer Documentation.")
 
-    doc.build(Story, onFirstPage=add_page_border_and_logo, onLaterPages=add_page_border_and_logo)
+    doc.build(Story, onFirstPage=draw_cover_border, onLaterPages=add_page_border_and_logo)
 
 if __name__ == "__main__":
     create_academic_pdf()

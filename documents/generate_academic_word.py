@@ -73,7 +73,7 @@ def create_word_document():
         header = doc.sections[0].header
         header_para = header.paragraphs[0]
         header_para.alignment = WD_ALIGN_PARAGRAPH.RIGHT
-        header_para.add_run().add_picture(logo_path, width=Inches(1.2))
+        header_para.add_run().add_picture(logo_path, width=Inches(0.9))
 
     # --- Title Page ---
     title = doc.add_paragraph()

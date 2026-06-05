@@ -8,62 +8,13 @@ This document details the system design, database architecture, AI integration p
 
 The platform uses a split-responsibility dual-application topology. This topology ensures administrative features and data mutation controls reside on a protected backend container, while tenants access a streamlined portal. Both apps interact with a single SQLite database running in WAL (Write-Ahead Logging) mode, resolving data conflicts through dedicated secure REST endpoints.
 
-```mermaid
-graph TB
-    subgraph TenantDomain["🏠 Tenant Portal Domain (adeer-tenant-portal.fly.dev)"]
-        A["Submit Request Page<br/>/submit"]
-        B["Dashboard Page<br/>/dashboard"]
-        C["API Router<br/>/api/sse & /api/tenant"]
-    end
-
-    subgraph OperationsDomain["📊 Operations Hub (maintenance-app.fly.dev)"]
-        D["Operations Dashboard<br/>/dashboard"]
-        E["API Controller<br/>/api/external/tenant-data"]
-        F["Gemini AI Pipeline<br/>lib/gemini.ts"]
-    end
-
-    subgraph DataStore["🗄️ Shared Persistence Layer"]
-        G[(SQLite Database dev.db)]
-    end
-
-    A -->|"Submit Details"| C
-    C -->|"Proxy HTTP Requests"| E
-    B -->|"SSE Event Stream"| C
-    C -->|"Poll & Fetch updates"| E
-    E -->|"Prisma Client"| G
-    D -->|"Prisma Client"| G
-    E -->|"Run Triage Prompt"| F
-    F -.->|"Google Gemini API"| GeminiEngine["Gemini 2.5 Flash Engine"]
-```
+![System Architecture Topology](../Screenshots/diagram_topology.png)
 
 ### Request Flow Sequence Diagram
 
 This sequence diagram outlines how requests are parsed by AI, saved, and synced in real-time between tenant and manager views.
 
-```mermaid
-sequenceDiagram
-    autonumber
-    participant Tenant as 👤 Tenant Client
-    participant TenantApp as 🖥️ Tenant Portal (Next.js)
-    participant AdminApp as ⚙️ Operations Admin (Next.js)
-    participant Gemini as 🤖 Gemini 2.5 Flash API
-    participant DB as 🗄️ SQLite Database
-
-    Tenant->>TenantApp: Inputs natural language issue & submits
-    TenantApp->>AdminApp: POST /api/external/requests/ (proxy payload)
-    AdminApp->>Gemini: Forward text & images for triage analysis
-    Gemini-->>AdminApp: Return JSON metadata (Category, Severity, Cost, Steps)
-    AdminApp->>DB: Write Request record & notification payload
-    AdminApp-->>TenantApp: Return ticket object
-    TenantApp-->>Tenant: Redirect to Dashboard with active ticket status
-    
-    Note over Tenant, AdminApp: Real-time Event Streaming (SSE)
-    AdminApp->>DB: Property manager edits status/assigns technician
-    DB-->>AdminApp: Update persistent record
-    TenantApp->>AdminApp: GET /api/external/tenant-data (polling event loop)
-    AdminApp-->>TenantApp: Return updated tickets & notifications
-    TenantApp-->>Tenant: Stream changes via EventSource to update UI dynamically
-```
+![System Sequence Diagram](../Screenshots/diagram_sequence.png)
 
 ---
 
@@ -93,49 +44,7 @@ Both applications are built with modern web technologies:
 
 The SQLite database is managed using Prisma. The structure of the core tables is defined below:
 
-```mermaid
-erDiagram
-    Tenant {
-        string id PK "cuid()"
-        string name "Full Name"
-        string email UK "Unique Address"
-        string unit "Unit / Apartment"
-        string password "Hashed credentials"
-        datetime createdAt
-    }
-
-    Request {
-        string id PK "cuid()"
-        string tenantName "Tenant Name"
-        string tenantEmail "Tenant Email"
-        string tenantUnit "Tenant Unit"
-        string rawInput "Description text"
-        string category "Plumbing|HVAC|Electrical|Appliance|..."
-        string severity "Low|Medium|High|Critical"
-        int priority "1 (highest) to 5 (lowest)"
-        string status "Pending|In Progress|Resolved|Cancelled"
-        string assignedTo "Assigned technician"
-        string summary "AI-generated ticket summary"
-        string actionSteps "JSON array of technical tasks"
-        string estimatedCost "Estimated cost range"
-        string imageUrl "URL of uploaded issue photo"
-        datetime createdAt
-        datetime updatedAt
-    }
-
-    Notification {
-        string id PK "cuid()"
-        string requestId FK "Links to Request"
-        string type "CONFIRMATION|STATUS_UPDATE|ASSIGNMENT"
-        string recipient "Recipient Email/Name"
-        string message "Text notification payload"
-        boolean read "Marked read status"
-        datetime createdAt
-    }
-
-    Tenant ||--o{ Request : "submits"
-    Request ||--o{ Notification : "triggers"
-```
+![Prisma ERD Diagram](../Screenshots/diagram_erd.png)
 
 ---
 
@@ -145,7 +54,7 @@ erDiagram
 
 The Tenant Portal includes validation on both the client and server. If a tenant's session becomes invalid or expires, the system automatically redirects them to the login screen.
 
-![Tenant Login Page](file:///c:/Users/ahmed/OneDrive/Documents/Innovation%20Manager%20Technical%20Challenge/Screenshots/e792f404-289a-4459-891b-bcff14c38fb2.png)
+![Tenant Login Page](../Screenshots/e792f404-289a-4459-891b-bcff14c38fb2.png)
 *Figure 1: Tenant Login Page featuring custom background orbs, glassmorphic inputs, and a custom loading animation using the pulsing Adeer logo inside the "Sign In" action button.*
 
 ---
@@ -154,7 +63,7 @@ The Tenant Portal includes validation on both the client and server. If a tenant
 
 The submit form features templates that allow tenants to quickly auto-populate common issue descriptions. The description is processed by the AI pipeline.
 
-![Tenant Submit Form](file:///c:/Users/ahmed/OneDrive/Documents/Innovation%20Manager%20Technical%20Challenge/Screenshots/Screenshot%202026-06-05%20190116.png)
+![Tenant Submit Form](../Screenshots/Screenshot%202026-06-05%20190116.png)
 *Figure 2: Maintenance submission form showing the one-field natural language description field, templated quick-fills, and photo upload controls.*
 
 ---
@@ -180,7 +89,7 @@ Respond ONLY with a valid JSON object:
 
 The property manager sees this metadata inside the ticket sidebar:
 
-![AI Details Sidebar](file:///c:/Users/ahmed/OneDrive/Documents/Innovation%20Manager%20Technical%20Challenge/Screenshots/Screenshot%202026-06-05%20190132.png)
+![AI Details Sidebar](../Screenshots/Screenshot%202026-06-05%20190132.png)
 *Figure 3: Operations details panel showing the AI-calculated severity (Critical), priority (P1), estimated repair cost range, and the checklist generated by Gemini.*
 
 ---
@@ -189,7 +98,7 @@ The property manager sees this metadata inside the ticket sidebar:
 
 The Operations Hub dashboard provides property managers with statistical counters, global search functionality, status filters, and priority tags to help manage incoming requests.
 
-![Operations Dashboard](file:///c:/Users/ahmed/OneDrive/Documents/Innovation%20Manager%20Technical%20Challenge/Screenshots/Screenshot%202026-06-05%20190101.png)
+![Operations Dashboard](../Screenshots/Screenshot%202026-06-05%20190101.png)
 *Figure 4: Operations admin dashboard showing active maintenance tickets, search tools, statistics, and category filters.*
 
 ---
@@ -198,7 +107,7 @@ The Operations Hub dashboard provides property managers with statistical counter
 
 The Tenant Portal dashboard establishes a Server-Sent Events (SSE) connection to listen for updates. When a property manager updates a ticket's status, the change is streamed to the tenant's browser, updating the dashboard instantly without requiring a page reload.
 
-![Tenant Dashboard](file:///c:/Users/ahmed/OneDrive/Documents/Innovation%20Manager%20Technical%20Challenge/Screenshots/Screenshot%202026-06-05%20190208.png)
+![Tenant Dashboard](../Screenshots/Screenshot%202026-06-05%20190208.png)
 *Figure 5: Tenant Dashboard showing the green "Live" synchronization status indicator next to the apartment details, alongside the real-time request tracker and browser notification toggles.*
 
 ---
