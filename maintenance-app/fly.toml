@@ -1,0 +1,19 @@
+# fly.toml file generated for maintenance-app
+
+app = "maintenance-app"
+primary_region = "cdg"
+
+[build]
+  dockerfile = "Dockerfile"
+
+[http_service]
+  internal_port = 3000
+  force_https = true
+  auto_stop_machines = true
+  auto_start_machines = true
+  min_machines_running = 0
+  processes = ["app"]
+
+[[mounts]]
+  source = "maintenance_data"
+  destination = "/data"

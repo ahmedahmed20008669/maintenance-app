@@ -1,0 +1,275 @@
+@import "tailwindcss";
+
+/* ===== DESIGN SYSTEM TOKENS ===== */
+:root {
+  /* Primary Palette - Adeer Teal */
+  --primary-50: #e0f6f8;
+  --primary-100: #b3e7ec;
+  --primary-200: #80d7e0;
+  --primary-300: #4dc7d3;
+  --primary-400: #26bac8;
+  --primary-500: #0099ad;
+  --primary-600: #008a9c;
+  --primary-700: #007787;
+  --primary-800: #006573;
+  --primary-900: #00535e;
+
+  /* Success */
+  --success-50: #ecfdf5;
+  --success-500: #10b981;
+  --success-600: #059669;
+
+  /* Warning */
+  --warning-50: #fffbeb;
+  --warning-500: #f59e0b;
+  --warning-600: #d97706;
+
+  /* Danger */
+  --danger-50: #fef2f2;
+  --danger-500: #ef4444;
+  --danger-600: #dc2626;
+
+  /* Neutrals */
+  --neutral-50: #f4f5f6;
+  --neutral-100: #e6e8eb;
+  --neutral-200: #cdd2d7;
+  --neutral-300: #b3bbc3;
+  --neutral-400: #9aa5b0;
+  --neutral-500: #818e9c;
+  --neutral-600: #67727d;
+  --neutral-700: #4d555d;
+  --neutral-800: #34393e;
+  --neutral-900: #1a1c1f;
+  --neutral-950: #0a0d14; /* Solid premium deep carbon background */
+  --foreground: #cbd5e1; /* Clearer gray-slate text */
+  --headings: #ffffff;
+  --link-hover: var(--primary-300); /* Matched primary theme hover color */
+  --border-color: #334155;
+}
+
+@theme inline {
+  --color-background: var(--neutral-950);
+  --color-foreground: var(--foreground);
+  --color-primary: var(--primary-500);
+  --color-primary-hover: var(--primary-400);
+  --color-accent: #ffffff;
+  --color-link-hover: var(--link-hover);
+  --font-sans: var(--font-sans);
+  --font-prompt: var(--font-prompt);
+}
+
+/* ===== GLOBAL STYLES ===== */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--neutral-700) transparent;
+}
+
+body {
+  background: var(--neutral-950);
+  color: var(--foreground);
+  font-family: var(--font-sans), system-ui, -apple-system, sans-serif;
+}
+
+/* ===== GLASSMORPHISM UTILITY ===== */
+.glass {
+  background: #0f131a; /* Solid dark carbon slate */
+  border: 1px solid #1e293b; /* Clean solid border */
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.5);
+}
+
+.glass-light {
+  background: #141b25; /* Slightly lighter solid dark-slate */
+  border: 1px solid #243142;
+}
+
+/* ===== GRADIENT TEXT ===== */
+.gradient-text {
+  color: var(--primary-400); /* Clean solid theme brand accent color */
+}
+
+/* ===== ANIMATED GRADIENT BACKGROUND ===== */
+.gradient-bg {
+  background: linear-gradient(
+    135deg,
+    var(--neutral-950) 0%,
+    #131a22 25%,
+    var(--neutral-950) 50%,
+    #181e26 75%,
+    var(--neutral-950) 100%
+  );
+  background-size: 400% 400%;
+  animation: gradientShift 15s ease infinite;
+}
+
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* ===== GLOW EFFECTS ===== */
+.glow-primary {
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+}
+
+.glow-success {
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.15);
+}
+
+.glow-danger {
+  box-shadow: 0 0 20px rgba(239, 68, 68, 0.15);
+}
+
+/* ===== PULSE DOT ===== */
+.pulse-dot {
+  position: relative;
+}
+.pulse-dot::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: -12px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--primary-400);
+  transform: translateY(-50%);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: translateY(-50%) scale(1); }
+  50% { opacity: 0.5; transform: translateY(-50%) scale(1.5); }
+}
+
+/* ===== CARD HOVER ===== */
+.card-hover {
+  transition: all 0.2s ease-out;
+}
+.card-hover:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+  border-color: var(--primary-500);
+}
+
+/* ===== STATUS BADGES ===== */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.025em;
+  text-transform: uppercase;
+}
+
+.badge-pending {
+  background: rgba(245, 158, 11, 0.12);
+  color: #fbbf24;
+  border: 1px solid rgba(245, 158, 11, 0.2);
+}
+
+.badge-in-progress {
+  background: rgba(99, 102, 241, 0.12);
+  color: #a5b4fc;
+  border: 1px solid rgba(99, 102, 241, 0.2);
+}
+
+.badge-resolved {
+  background: rgba(16, 185, 129, 0.12);
+  color: #6ee7b7;
+  border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.badge-cancelled {
+  background: rgba(239, 68, 68, 0.12);
+  color: #fca5a5;
+  border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+/* ===== SEVERITY INDICATORS ===== */
+.severity-low {
+  color: #6ee7b7;
+}
+.severity-medium {
+  color: #fbbf24;
+}
+.severity-high {
+  color: #fb923c;
+}
+.severity-critical {
+  color: #f87171;
+}
+
+/* ===== SHIMMER LOADING ===== */
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(30, 41, 59, 0.5) 25%,
+    rgba(51, 65, 85, 0.5) 50%,
+    rgba(30, 41, 59, 0.5) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* ===== FADE IN ANIMATION ===== */
+.fade-in {
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.slide-up {
+  animation: slideUp 0.4s ease-out forwards;
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== TOAST NOTIFICATION ===== */
+.toast-enter {
+  animation: toastIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.toast-exit {
+  animation: toastOut 0.3s ease-in forwards;
+}
+
+@keyframes toastIn {
+  from { opacity: 0; transform: translateX(100%) scale(0.95); }
+  to { opacity: 1; transform: translateX(0) scale(1); }
+}
+
+@keyframes toastOut {
+  from { opacity: 1; transform: translateX(0) scale(1); }
+  to { opacity: 0; transform: translateX(100%) scale(0.95); }
+}
+
+/* ===== FORM INPUTS ===== */
+input, textarea, select {
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+input:focus, textarea:focus, select:focus {
+  outline: none;
+  border-color: var(--primary-500) !important;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+}
+
+/* ===== FLOATING ORB BACKGROUND ===== */
+.orb {
+  display: none !important; /* Disabled colorful float background orbs for professional look */
+}

@@ -1,0 +1,14 @@
+node_modules
+.next
+out
+build
+.git
+*.db
+*.db-journal
+*.db-wal
+generate_pdf.py
+MaintenanceAI_Competitive_Analysis.pdf
+adeer.html
+.env
+.env.local
+.env.production

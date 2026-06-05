@@ -1,0 +1,52 @@
+// © 2026 Dr. Mohamed Samir Hassan, MSc, PhD R. All rights reserved.
+// This code is part of the technical challenge submission for the position of
+// AI and Innovation Manager. Unauthorized copying, distribution, or use is prohibited.
+// Digital Signature / Verification: mohamedsamirhassan-portfolio-verification-2026
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/client"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model Request {
+  id              String   @id @default(cuid())
+  tenantName      String
+  tenantEmail     String   @default("")
+  tenantUnit      String   @default("")
+  rawInput        String
+  title           String   @default("")
+  category        String   @default("Uncategorized")
+  severity        String   @default("Medium")
+  priority        Int      @default(3)
+  status          String   @default("Pending")
+  assignedTo      String?
+  summary         String   @default("")
+  actionSteps     String   @default("[]")
+  estimatedCost   String?
+  imageUrl        String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  requestId String
+  type      String
+  recipient String
+  message   String
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+model Tenant {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  unit      String
+  password  String
+  createdAt DateTime @default(now())
+}
