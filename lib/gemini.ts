@@ -81,3 +81,62 @@ Respond ONLY with a valid JSON object (no markdown, no code fences) with the fol
     }
   }
 }
+
+export async function generateCommunication(
+  requestDetails: any,
+  type: 'TENANT_UPDATE' | 'PROVIDER_MESSAGE'
+) {
+  let prompt = '';
+  
+  if (type === 'TENANT_UPDATE') {
+    prompt = `You are an AI assistant for a property management company. Write a professional, empathetic, and concise update email to a tenant regarding their maintenance request.
+
+Tenant Name: ${requestDetails.tenantName}
+Request Category: ${requestDetails.category}
+Current Status: ${requestDetails.status}
+Summary of Issue: ${requestDetails.summary}
+
+Draft the email. Do not include subject lines or markdown formatting, just the plain text message body. Ensure it is polite and reassuring.`;
+  } else if (type === 'PROVIDER_MESSAGE') {
+    prompt = `You are an AI assistant for a property management company. Write a professional and direct message to a service provider assigning them a task or asking for an update on a maintenance request.
+
+Service Provider: ${requestDetails.assignedTo || 'Service Provider'}
+Request Category: ${requestDetails.category}
+Severity: ${requestDetails.severity}
+Current Status: ${requestDetails.status}
+Summary of Issue: ${requestDetails.summary}
+Tenant Unit: ${requestDetails.tenantUnit || 'N/A'}
+
+Draft the message. Keep it brief, action-oriented, and professional. Do not include subject lines or markdown formatting.`;
+  }
+
+  try {
+    const apiKey = process.env.GEMINI_API_KEY || '';
+    
+    const res = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=" + apiKey, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: prompt }] }],
+        generationConfig: {
+          temperature: 0.7
+        }
+      })
+    });
+
+    if (!res.ok) {
+      throw new Error(`Gemini API failed: ${res.status}`);
+    }
+
+    const data = await res.json();
+    const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+    
+    return text.trim();
+  } catch (error) {
+    console.error('Gemini communication generation error:', error);
+    return 'Failed to generate message. Please try again.';
+  }
+}
+

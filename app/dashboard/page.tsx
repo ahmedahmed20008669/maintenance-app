@@ -41,6 +41,7 @@ interface Request {
   priority: number;
   status: string;
   assignedTo: string | null;
+  title: string;
   summary: string;
   actionSteps: string;
   estimatedCost: string | null;
@@ -70,6 +71,8 @@ function DashboardContent() {
   const [filterStatus, setFilterStatus] = useState("All");
   const [filterCategory, setFilterCategory] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
+  const [communications, setCommunications] = useState<any[]>([]);
+  const [isGeneratingComm, setIsGeneratingComm] = useState(false);
 
   const fetchRequests = useCallback(async () => {
     try {
@@ -120,6 +123,47 @@ function DashboardContent() {
         title: "Error",
         message: "Failed to update request.",
       });
+    }
+  };
+
+  useEffect(() => {
+    if (selectedRequest) {
+      fetch(`/api/requests/${selectedRequest.id}/communications`)
+        .then(res => res.json())
+        .then(data => {
+          if (Array.isArray(data)) setCommunications(data);
+        })
+        .catch(console.error);
+    } else {
+      setCommunications([]);
+    }
+  }, [selectedRequest]);
+
+  const generateCommunication = async (type: string) => {
+    if (!selectedRequest) return;
+    setIsGeneratingComm(true);
+    try {
+      const res = await fetch(`/api/requests/${selectedRequest.id}/communications`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ type })
+      });
+      if (!res.ok) throw new Error();
+      const newComm = await res.json();
+      setCommunications(prev => [newComm, ...prev]);
+      addToast({
+        type: 'success',
+        title: 'Generated',
+        message: 'Communication generated successfully.'
+      });
+    } catch {
+      addToast({
+        type: 'error',
+        title: 'Error',
+        message: 'Failed to generate communication.'
+      });
+    } finally {
+      setIsGeneratingComm(false);
     }
   };
 
@@ -293,10 +337,16 @@ function DashboardContent() {
                     <CategoryIcon category={request.category} />
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-1">
-                        <p className="text-sm font-semibold text-white truncate">
-                          {request.summary || request.rawInput}
+                        <span className="text-xs font-mono text-[var(--primary-400)] bg-[var(--primary-900)] px-1.5 py-0.5 rounded shrink-0">
+                          #{request.id.slice(-6).toUpperCase()}
+                        </span>
+                        <p className="text-sm font-bold text-white truncate">
+                          {request.title || request.category + ' Issue'}
                         </p>
                       </div>
+                      <p className="text-xs text-[var(--neutral-400)] mb-2 truncate">
+                        {request.summary || request.rawInput}
+                      </p>
                       <div className="flex items-center gap-2 flex-wrap mb-2">
                         <StatusBadge status={request.status} />
                         <SeverityIndicator severity={request.severity} />
@@ -349,11 +399,11 @@ function DashboardContent() {
               <div className="flex items-center gap-3">
                 <CategoryIcon category={selectedRequest.category} />
                 <div>
-                  <p className="text-xs text-[var(--neutral-500)] font-mono">
-                    #{selectedRequest.id.slice(0, 8)}
+                  <p className="text-xs text-[var(--primary-400)] font-mono">
+                    #{selectedRequest.id.slice(-6).toUpperCase()}
                   </p>
-                  <p className="text-sm font-semibold text-white font-prompt">
-                    {selectedRequest.category}
+                  <p className="text-lg font-bold text-white font-prompt">
+                    {selectedRequest.title || selectedRequest.category + ' Issue'}
                   </p>
                 </div>
               </div>
@@ -545,6 +595,50 @@ function DashboardContent() {
                     ))}
                   </select>
                 </div>
+              </div>
+
+              {/* AI Communications */}
+              <div className="border-t border-[rgba(255,255,255,0.05)] pt-6 space-y-4">
+                <h4 className="text-xs font-semibold text-[var(--neutral-500)] uppercase tracking-wider font-prompt flex items-center justify-between">
+                  <span>AI Communications</span>
+                  {isGeneratingComm && <span className="text-[var(--primary-400)] text-[10px] animate-pulse">Generating...</span>}
+                </h4>
+                
+                <div className="flex gap-2 flex-wrap">
+                  <button
+                    onClick={() => generateCommunication('TENANT_UPDATE')}
+                    disabled={isGeneratingComm}
+                    className="text-xs px-4 py-2 rounded-lg border border-[var(--primary-500)] text-[var(--primary-300)] hover:bg-[var(--primary-500)] hover:text-white transition-all disabled:opacity-50"
+                  >
+                    Update Tenant
+                  </button>
+                  <button
+                    onClick={() => generateCommunication('PROVIDER_MESSAGE')}
+                    disabled={isGeneratingComm || !selectedRequest.assignedTo}
+                    title={!selectedRequest.assignedTo ? "Assign a provider first" : ""}
+                    className="text-xs px-4 py-2 rounded-lg border border-[#fbbf24] text-[#fbbf24] hover:bg-[#fbbf24] hover:text-black transition-all disabled:opacity-50"
+                  >
+                    Message Provider
+                  </button>
+                </div>
+
+                {communications.length > 0 && (
+                  <div className="space-y-3 mt-4">
+                    {communications.map(comm => (
+                      <div key={comm.id} className="bg-[var(--neutral-900)] p-3 rounded-xl border border-[var(--neutral-800)]">
+                        <div className="flex justify-between items-center mb-2">
+                          <span className="text-[10px] text-[var(--neutral-400)] font-mono uppercase">
+                            {comm.type === 'TENANT_UPDATE' ? 'To Tenant' : 'To Provider'}: {comm.recipient}
+                          </span>
+                          <span className="text-[10px] text-[var(--neutral-500)]">
+                            {new Date(comm.createdAt).toLocaleString()}
+                          </span>
+                        </div>
+                        <p className="text-xs text-[var(--neutral-300)] whitespace-pre-wrap">{comm.message}</p>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
           </>

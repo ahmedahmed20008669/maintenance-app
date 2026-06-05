@@ -51,7 +51,7 @@ export async function PATCH(
         request.id,
         'STATUS_UPDATE',
         request.tenantName,
-        `Your maintenance request status has been updated to: ${status}.${assignedTo ? ` Assigned to: ${assignedTo}` : ''}`
+        `Ticket #${request.id.slice(-6).toUpperCase()} [${request.title || request.category + ' Issue'}]: Status has been updated to: ${status}.${assignedTo ? ` Assigned to: ${assignedTo}` : ''}`
       )
     }
 

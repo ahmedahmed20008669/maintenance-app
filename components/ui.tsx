@@ -383,9 +383,9 @@ export function CategoryIcon({ category }: { category: string }) {
 
 // ===== LOADING & EMPTY STATES =====
 
-export function LoadingSpinner() {
+export function LoadingSpinner({ className }: { className?: string }) {
   return (
-    <div className="flex items-center justify-center py-12">
+    <div className={`flex items-center justify-center py-12 ${className || ''}`}>
       <div className="relative w-12 h-12">
         <div className="absolute inset-0 rounded-full border-2 border-[var(--neutral-700)]" />
         <div className="absolute inset-0 rounded-full border-2 border-transparent border-t-[var(--primary-500)] animate-spin" />

@@ -19,6 +19,7 @@ function createDatabase() {
       tenantEmail TEXT DEFAULT '',
       tenantUnit TEXT DEFAULT '',
       rawInput TEXT NOT NULL,
+      title TEXT DEFAULT '',
       category TEXT DEFAULT 'Uncategorized',
       severity TEXT DEFAULT 'Medium',
       priority INTEGER DEFAULT 3,
