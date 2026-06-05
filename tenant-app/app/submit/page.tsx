@@ -22,7 +22,7 @@ function SubmitForm() {
   useEffect(() => {
     fetch('/api/tenant/data')
       .then(res => {
-        if (res.status === 401) { router.push('/'); return null; }
+        if (!res.ok) { router.push('/'); return null; }
         return res.json();
       })
       .then(data => {

@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db, generateId } from '@/lib/db'
-import { classifyMaintenanceRequest } from '@/lib/gemini'
 import fs from 'fs'
 import path from 'path'
 
@@ -31,7 +30,8 @@ export async function POST(req: NextRequest) {
               fs.mkdirSync(uploadDir, { recursive: true });
             }
             fs.writeFileSync(path.join(uploadDir, fileName), buffer);
-            savedImageUrls.push(`/uploads/${fileName}`);
+            // Use absolute URL so Admin portal can access the image over the internet
+            savedImageUrls.push(`https://adeer-tenant-portal.fly.dev/uploads/${fileName}`);
             validImagesToProcess.push(img);
           }
         } catch (err) {
@@ -42,43 +42,66 @@ export async function POST(req: NextRequest) {
 
     const finalImageUrl = savedImageUrls.length > 0 ? JSON.stringify(savedImageUrls) : null;
 
-    const classification = await classifyMaintenanceRequest(description, validImagesToProcess)
+    // Send payload to Admin app for AI Processing & Global Storage
+    const adminApiRes = await fetch('https://maintenance-app.fly.dev/api/external/requests', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${process.env.SERVICE_API_KEY}`
+      },
+      body: JSON.stringify({
+        tenantName,
+        tenantEmail,
+        tenantUnit,
+        description,
+        finalImageUrl,
+        validImagesToProcess
+      })
+    });
 
-    const requestId = generateId()
-    
+    if (!adminApiRes.ok) {
+      const errText = await adminApiRes.text();
+      console.error('Admin API failed:', errText);
+      throw new Error('Failed to process ticket on Admin server');
+    }
+
+    const { request: adminReq, notification: adminNotif } = await adminApiRes.json();
+
+    // Store local copy in Tenant Database for dashboard rendering
     db.prepare(`
-      INSERT INTO Request (id, tenantName, tenantEmail, tenantUnit, rawInput, title, category, severity, priority, summary, actionSteps, estimatedCost, imageUrl)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      INSERT INTO Request (id, tenantName, tenantEmail, tenantUnit, rawInput, title, category, severity, priority, summary, actionSteps, estimatedCost, imageUrl, createdAt, status)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `).run(
-      requestId,
-      tenantName,
-      tenantEmail || '',
-      tenantUnit || '',
-      description,
-      classification.title,
-      classification.category,
-      classification.severity,
-      classification.priority,
-      classification.summary,
-      classification.actionSteps,
-      classification.estimatedCost,
-      finalImageUrl
+      adminReq.id,
+      adminReq.tenantName,
+      adminReq.tenantEmail || '',
+      adminReq.tenantUnit || '',
+      adminReq.rawInput,
+      adminReq.title,
+      adminReq.category,
+      adminReq.severity,
+      adminReq.priority,
+      adminReq.summary,
+      adminReq.actionSteps,
+      adminReq.estimatedCost,
+      adminReq.imageUrl,
+      adminReq.createdAt,
+      adminReq.status
     )
 
     db.prepare(`
-      INSERT INTO Notification (id, requestId, type, recipient, message)
-      VALUES (?, ?, ?, ?, ?)
+      INSERT INTO Notification (id, requestId, type, recipient, message, createdAt)
+      VALUES (?, ?, ?, ?, ?, ?)
     `).run(
-      generateId(),
-      requestId,
-      'CONFIRMATION',
-      tenantName,
-      `Ticket #${requestId.slice(-6).toUpperCase()} [${classification.title}]: Your maintenance request has been received and classified as ${classification.category} with ${classification.severity} severity. We will address it shortly.`
+      adminNotif.id,
+      adminNotif.requestId,
+      adminNotif.type,
+      adminNotif.recipient,
+      adminNotif.message,
+      adminNotif.createdAt
     )
 
-    const request = db.prepare('SELECT * FROM Request WHERE id = ?').get(requestId)
-
-    return NextResponse.json(request, { status: 201 })
+    return NextResponse.json(adminReq, { status: 201 })
   } catch (error) {
     console.error('Error creating request:', error)
     return NextResponse.json({ error: 'Failed to create request' }, { status: 500 })

@@ -9,6 +9,7 @@ Maintenance Request: "${description}"
 
 Respond ONLY with a valid JSON object (no markdown, no code fences) with the following fields:
 {
+  "title": "a short concise 3-5 word title for the request",
   "category": "one of: Plumbing, Electrical, HVAC, Structural, Appliance, Pest Control, Cleaning, Security, Landscaping, General",
   "severity": "one of: Low, Medium, High, Critical",
   "priority": "a number from 1 (highest) to 5 (lowest)",
@@ -60,6 +61,7 @@ Respond ONLY with a valid JSON object (no markdown, no code fences) with the fol
     const parsed = JSON.parse(cleanedText);
     
     return {
+      title: parsed.title || 'Maintenance Request',
       category: parsed.category || 'General',
       severity: parsed.severity || 'Medium',
       priority: parsed.priority || 3,
@@ -71,6 +73,7 @@ Respond ONLY with a valid JSON object (no markdown, no code fences) with the fol
   } catch (error) {
     console.error('Gemini API error:', error)
     return {
+      title: 'Maintenance Request',
       category: 'General',
       severity: 'Medium',
       priority: 3,

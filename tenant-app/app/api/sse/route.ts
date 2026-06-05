@@ -25,14 +25,13 @@ export async function GET(req: NextRequest) {
       let lastRequestHash = ''
       let lastNotifHash = ''
 
-      const sendUpdate = () => {
+      const sendUpdate = async () => {
         try {
-          const requests = db.prepare('SELECT * FROM Request WHERE tenantEmail = ? ORDER BY createdAt DESC').all(tenant.email)
-          const notifications = db.prepare(`
-            SELECT * FROM Notification 
-            WHERE type IN ('TENANT_UPDATE', 'CONFIRMATION', 'STATUS_UPDATE') AND (recipient = ? OR recipient = ?)
-            ORDER BY createdAt DESC
-          `).all(tenant.name, tenant.email)
+          const adminRes = await fetch(`https://maintenance-app.fly.dev/api/external/tenant-data?email=${encodeURIComponent(tenant.email)}&name=${encodeURIComponent(tenant.name)}`, { cache: 'no-store' });
+          if (!adminRes.ok) return;
+          const dataFromAdmin = await adminRes.json();
+          const requests = dataFromAdmin.requests;
+          const notifications = dataFromAdmin.notifications;
 
           const reqHash = JSON.stringify(requests.map((r: any) => r.id + r.status + r.assignedTo))
           const notifHash = JSON.stringify(notifications.map((n: any) => n.id))

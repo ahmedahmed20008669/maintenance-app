@@ -22,28 +22,37 @@ export default function TenantDashboard() {
   const [loading, setLoading] = useState(true);
   const [connected, setConnected] = useState(false);
   const [flash, setFlash] = useState<string | null>(null);
+  const [notificationPermission, setNotificationPermission] = useState<string>('granted');
   const eventSourceRef = useRef<EventSource | null>(null);
   const prevNotifsRef = useRef(0);
   const prevReqsRef = useRef('');
 
   useEffect(() => {
-    if ('Notification' in window && Notification.permission === 'default') {
-      Notification.requestPermission();
+    if ('Notification' in window) {
+      setNotificationPermission(Notification.permission);
     }
   }, []);
+
+  const requestNotificationPermission = () => {
+    if ('Notification' in window) {
+      Notification.requestPermission().then(permission => {
+        setNotificationPermission(permission);
+      });
+    }
+  };
 
   // Initial data fetch
   useEffect(() => {
     fetch('/api/tenant/data')
       .then(res => {
-        if (res.status === 401) { router.push('/'); return null; }
+        if (!res.ok) { router.push('/'); return null; }
         return res.json();
       })
       .then(data => {
-        if (data) {
+        if (data && data.tenant) {
           setTenant(data.tenant);
-          setRequests(data.requests);
-          setNotifications(data.notifications);
+          setRequests(data.requests || []);
+          setNotifications(data.notifications || []);
         }
       })
       .catch(console.error)
@@ -62,8 +71,8 @@ export default function TenantDashboard() {
     es.onmessage = (event) => {
       try {
         const data = JSON.parse(event.data);
-        setRequests(data.requests);
-        setNotifications(data.notifications);
+        setRequests(data.requests || []);
+        setNotifications(data.notifications || []);
       } catch (err) {
         console.error('SSE parse error:', err);
       }
@@ -201,13 +210,23 @@ export default function TenantDashboard() {
 
           {/* Notifications / Inbox */}
           <div className="space-y-4">
-            <h2 className="text-lg font-bold text-white mb-2 flex items-center gap-2">
-              <BellIcon className="w-5 h-5" />
-              Updates
-              {flash === 'notification' && (
-                <span className="bg-[var(--primary-500)] text-white text-xs py-0.5 px-2 rounded-full animate-pulse">
-                  New!
-                </span>
+            <h2 className="text-lg font-bold text-white mb-2 flex items-center justify-between w-full">
+              <div className="flex items-center gap-2">
+                <BellIcon className="w-5 h-5" />
+                Updates
+                {flash === 'notification' && (
+                  <span className="bg-[var(--primary-500)] text-white text-xs py-0.5 px-2 rounded-full animate-pulse">
+                    New!
+                  </span>
+                )}
+              </div>
+              {notificationPermission === 'default' && (
+                <button 
+                  onClick={requestNotificationPermission}
+                  className="text-xs bg-[var(--primary-900)] text-[var(--primary-400)] px-2 py-1 rounded hover:bg-[var(--primary-800)] border border-[var(--primary-800)] transition-colors"
+                >
+                  Enable Desktop Notifications
+                </button>
               )}
             </h2>
 

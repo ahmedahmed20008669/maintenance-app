@@ -13,9 +13,26 @@ export async function GET() {
 
     const tenant = db.prepare('SELECT id, name, email, unit, createdAt FROM Tenant WHERE id = ?').get(tenantId) as any
     if (!tenant) {
-      return NextResponse.json({ error: 'Tenant not found' }, { status: 404 })
+      const response = NextResponse.json({ error: 'Tenant not found' }, { status: 404 })
+      response.cookies.delete('tenant_session')
+      return response
     }
 
+    try {
+      const adminRes = await fetch(`https://maintenance-app.fly.dev/api/external/tenant-data?email=${encodeURIComponent(tenant.email)}&name=${encodeURIComponent(tenant.name)}`, { cache: 'no-store' });
+      if (adminRes.ok) {
+        const data = await adminRes.json();
+        return NextResponse.json({
+          tenant,
+          requests: data.requests,
+          notifications: data.notifications
+        });
+      }
+    } catch(err) {
+      console.error('Admin API fetch failed:', err);
+    }
+
+    // Fallback to local DB just in case Admin is down
     const requests = db.prepare('SELECT * FROM Request WHERE tenantEmail = ? ORDER BY createdAt DESC').all(tenant.email)
     
     const notifications = db.prepare(`
