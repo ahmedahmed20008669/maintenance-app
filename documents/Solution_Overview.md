@@ -30,39 +30,40 @@ Property management companies face significant challenges in handling maintenanc
 
 ## Key Features
 
-### 1. Natural Language Request Submission
-Tenants describe their issue in their own words — no dropdowns, no forms to navigate. The AI handles the rest.
+### 1. Natural Language Request Submission & Multi-Modal Support
+Tenants describe their issue in their own words and can upload images. The AI handles the rest, analyzing both text and attached visual evidence to get accurate context.
 
 ### 2. AI-Powered Classification & Prioritization
-Using Google Gemini, the system extracts structured data from unstructured text:
+Using Google Gemini, the system extracts structured data from unstructured text and images:
 - **Category**: 10 categories (Plumbing, Electrical, HVAC, Structural, Appliance, Pest Control, Cleaning, Security, Landscaping, General)
 - **Severity**: Low → Critical
 - **Priority**: 1 (highest) → 5 (lowest)
 - **Action Steps**: Recommended resolution steps
 - **Cost Estimate**: Predicted repair cost range
 
-### 3. Operations Dashboard
+### 3. Operations Dashboard & Invoice Generation
 A comprehensive, real-time dashboard for property managers featuring:
 - Summary statistics cards (total, pending, in-progress, resolved, critical)
 - Search and multi-filter capabilities (by status, category, text)
-- Detailed request view with AI-generated insights
+- Detailed request view with AI-generated insights and full communication history
+- Automated PDF invoice generation directly from the ticket details
 - One-click status updates and service provider assignment
 
-### 4. Automated Communication
-The system automatically generates notifications for:
-- **Tenants**: Request confirmation, status updates
-- **Service Providers**: New assignment alerts with full context
-- All notifications are tracked in a dedicated Notifications page with read/unread state management.
+### 4. Automated Communication & Ticket Updates
+The system automatically tracks communication between tenants and admins:
+- **Tenants**: Request confirmation, status updates, and ticket updates via comments.
+- **Service Providers**: New assignment alerts with full context.
+- **Admin**: Tracks historical updates on a ticket and automatically regenerates AI summaries based on the full conversation history.
 
 ## AI Capabilities
 
 | Capability | Description |
 |-----------|-------------|
-| **NLP Text Analysis** | Processes free-form text to extract structured maintenance data |
+| **Multi-Modal Analysis** | Processes free-form text and images to extract structured maintenance data |
 | **Multi-label Classification** | Simultaneously determines category, severity, and priority |
-| **Summarization** | Converts informal language into professional issue summaries |
+| **Summarization** | Converts informal language and history logs into professional issue summaries |
 | **Action Recommendation** | Generates step-by-step resolution plans |
-| **Cost Estimation** | Provides estimated repair cost ranges |
+| **Cost Estimation** | Provides estimated repair cost ranges for billing |
 
 ## Technology Stack
 
@@ -70,9 +71,10 @@ The system automatically generates notifications for:
 |-------|-----------|
 | **Frontend** | Next.js 16 (App Router), React, Tailwind CSS |
 | **Backend** | Next.js API Routes (server-side) |
-| **Database** | SQLite via Prisma ORM (Azure-ready) |
+| **Database** | SQLite via Prisma ORM |
 | **AI Engine** | Google Gemini 2.0 Flash |
-| **Language** | TypeScript |
+| **Deployment** | Fly.io (Containerized Docker deployment with persistent volumes) |
+| **Document Generation** | Python (ReportLab) & jsPDF |
 
 ## Business Impact
 
@@ -84,9 +86,7 @@ The system automatically generates notifications for:
 
 ## Future Enhancements
 
-1. **Image Analysis** — Use Gemini's vision capabilities to analyze photos of damage
-2. **Predictive Maintenance** — Use historical data to predict and prevent common issues
-3. **Multi-language Support** — Leverage AI for automatic translation of requests
-4. **Integration with IoT** — Connect smart building sensors for automatic issue detection
-5. **Azure Deployment** — Scale to production with Azure App Service and Azure SQL
-6. **Mobile App** — React Native companion app for tenants and service providers
+1. **Predictive Maintenance** — Use historical data to predict and prevent common issues
+2. **Multi-language Support** — Leverage AI for automatic translation of requests
+3. **Integration with IoT** — Connect smart building sensors for automatic issue detection
+4. **Mobile App** — React Native companion app for tenants and service providers
