@@ -63,7 +63,7 @@ class NumberedCanvas(canvas.Canvas):
         # Small adeer logo in header
         logo_path = r"../maintenance-app/public/adeer-logo.png"
         if os.path.exists(logo_path):
-            self.drawImage(logo_path, 500, 722, width=60, preserveAspectRatio=True, mask='auto')
+            self.drawImage(logo_path, 500, 637, width=60, preserveAspectRatio=True, mask='auto')
 
         # Footer text & line
         self.setStrokeColor(COLOR_BORDER)
@@ -81,7 +81,7 @@ class NumberedCanvas(canvas.Canvas):
 def create_specs_pdf():
     pdf_path = "System_Architecture_and_Specifications.pdf"
     doc = SimpleDocTemplate(pdf_path, pagesize=letter,
-                            rightMargin=50, leftMargin=50, topMargin=95, bottomMargin=50)
+                            rightMargin=50, leftMargin=50, topMargin=180, bottomMargin=50)
     styles = getSampleStyleSheet()
     
     # Custom Cover Styles

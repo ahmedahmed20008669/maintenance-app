@@ -64,7 +64,7 @@ class NumberedCanvas(canvas.Canvas):
         # Small adeer logo in header
         logo_path = r"../maintenance-app/public/adeer-logo.png"
         if os.path.exists(logo_path):
-            self.drawImage(logo_path, 500, 722, width=60, preserveAspectRatio=True, mask='auto')
+            self.drawImage(logo_path, 500, 637, width=60, preserveAspectRatio=True, mask='auto')
 
         # Footer text & line
         self.setStrokeColor(COLOR_BORDER)
@@ -146,7 +146,7 @@ def create_pdf(filename="MaintenanceAI_Competitive_Analysis.pdf"):
         pagesize=letter,
         leftMargin=50,
         rightMargin=50,
-        topMargin=95,
+        topMargin=180,
         bottomMargin=50
     )
 
