@@ -44,6 +44,7 @@ class NumberedCanvas(canvas.Canvas):
         # Skip header/footer on Page 1 (Cover Page).
         if self._pageNumber == 1:
             # Draw beautiful background decoration on the Cover Page
+            self.saveState()
             self.setFillColor(COLOR_DARK_BG)
             self.rect(0, 0, 8.5 * inch, 11 * inch, fill=True, stroke=False)
             
@@ -51,32 +52,33 @@ class NumberedCanvas(canvas.Canvas):
             self.setFillColor(COLOR_TEAL)
             self.rect(0, 0, 8.5 * inch, 0.25 * inch, fill=True, stroke=False)
             self.rect(0, 10.75 * inch, 8.5 * inch, 0.25 * inch, fill=True, stroke=False)
+            self.restoreState()
             return
 
         # Regular Pages: Draw standard layout
         self.saveState()
         
-        # Header line & text
-        self.setFont("Helvetica-Bold", 8)
-        self.setFillColor(COLOR_TEAL)
-        self.drawString(54, 11 * inch - 36, "MAINTENANCE-AI: STRATEGIC COMPETITIVE ADVANTAGE PAPER")
-        self.setFont("Helvetica", 8)
-        self.setFillColor(COLOR_MUTED)
-        self.drawRightString(8.5 * inch - 54, 11 * inch - 36, "Adeer International Proprietary Report")
+        # 3pt Teal Page Border
+        self.setStrokeColor(COLOR_TEAL)
+        self.setLineWidth(3)
+        self.rect(20, 20, 572, 752)
         
-        self.setStrokeColor(COLOR_BORDER)
-        self.setLineWidth(0.5)
-        self.line(54, 11 * inch - 42, 8.5 * inch - 54, 11 * inch - 42)
+        # Small adeer logo in header
+        logo_path = r"../maintenance-app/public/adeer-logo.png"
+        if os.path.exists(logo_path):
+            self.drawImage(logo_path, 500, 722, width=60, preserveAspectRatio=True, mask='auto')
 
-        # Footer line & text
-        self.line(54, 50, 8.5 * inch - 54, 50)
+        # Footer text & line
+        self.setStrokeColor(colors.HexColor('#2e3342'))
+        self.setLineWidth(0.5)
+        self.line(40, 45, 572, 45)
         self.setFont("Helvetica", 8)
         self.setFillColor(COLOR_MUTED)
-        self.drawString(54, 38, "Confidential - For Internal and Partner Use Only")
+        self.drawString(40, 32, "Confidential - For Internal and Partner Use Only")
         
         # Standard Page numbering: "Page X of Y"
         page_str = f"Page {self._pageNumber} of {page_count}"
-        self.drawRightString(8.5 * inch - 54, 38, page_str)
+        self.drawRightString(572, 32, page_str)
         self.restoreState()
 
 def create_system_diagram():
@@ -145,10 +147,10 @@ def create_pdf(filename="MaintenanceAI_Competitive_Analysis.pdf"):
     doc = SimpleDocTemplate(
         filename,
         pagesize=letter,
-        leftMargin=54,
-        rightMargin=54,
-        topMargin=54,
-        bottomMargin=54
+        leftMargin=50,
+        rightMargin=50,
+        topMargin=95,
+        bottomMargin=50
     )
 
     styles = getSampleStyleSheet()
