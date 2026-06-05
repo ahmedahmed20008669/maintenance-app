@@ -142,7 +142,7 @@ export default function LoginPage() {
             disabled={loading}
             className="w-full bg-[var(--primary-500)] hover:bg-[var(--primary-600)] text-white font-semibold py-3 px-4 rounded-xl transition-all disabled:opacity-70 flex justify-center items-center gap-2 mt-2"
           >
-            {loading && <LoadingSpinner className="w-5 h-5" />}
+            {loading && <LoadingSpinner className="h-5 w-auto" />}
             {isLogin ? 'Sign In' : 'Create Account'}
           </button>
         </form>
