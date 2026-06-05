@@ -250,7 +250,7 @@ export default function TenantDashboard() {
                               className="px-4 py-1.5 text-xs font-semibold bg-[var(--primary-600)] hover:bg-[var(--primary-500)] text-white rounded-lg transition-colors flex items-center gap-1.5"
                             >
                               {submittingUpdateId === req.id ? (
-                                <LoadingSpinner className="w-3.5 h-3.5" />
+                                <LoadingSpinner className="h-4 w-auto mr-1" />
                               ) : null}
                               Send Update
                             </button>

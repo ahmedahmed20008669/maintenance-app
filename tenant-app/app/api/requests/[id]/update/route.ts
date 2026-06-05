@@ -21,8 +21,8 @@ export async function POST(
       return NextResponse.json({ error: 'Update details are required' }, { status: 400 })
     }
 
-    // Call Admin application to update global database and trigger Gemini
-    const adminApiRes = await fetch(`https://maintenance-app.fly.dev/api/external/requests/${id}/update`, {
+    const adminUrl = process.env.ADMIN_URL || 'http://localhost:3000';
+    const adminApiRes = await fetch(`${adminUrl}/api/external/requests/${id}/update`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

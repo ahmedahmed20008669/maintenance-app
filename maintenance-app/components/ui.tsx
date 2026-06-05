@@ -385,11 +385,12 @@ export function CategoryIcon({ category }: { category: string }) {
 
 export function LoadingSpinner({ className }: { className?: string }) {
   return (
-    <div className={`flex items-center justify-center py-12 ${className || ''}`}>
-      <div className="relative w-12 h-12">
-        <div className="absolute inset-0 rounded-full border-2 border-[var(--neutral-700)]" />
-        <div className="absolute inset-0 rounded-full border-2 border-transparent border-t-[var(--primary-500)] animate-spin" />
-      </div>
+    <div className="flex items-center justify-center">
+      <img 
+        src="/adeer-logo.png" 
+        alt="Loading..." 
+        className={`object-contain animate-pulse ${className || 'h-12 w-auto'}`} 
+      />
     </div>
   );
 }

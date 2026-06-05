@@ -19,7 +19,8 @@ export async function GET() {
     }
 
     try {
-      const adminRes = await fetch(`https://maintenance-app.fly.dev/api/external/tenant-data?email=${encodeURIComponent(tenant.email)}&name=${encodeURIComponent(tenant.name)}`, { cache: 'no-store' });
+      const adminUrl = process.env.ADMIN_URL || 'http://localhost:3000';
+      const adminRes = await fetch(`${adminUrl}/api/external/tenant-data?email=${encodeURIComponent(tenant.email)}&name=${encodeURIComponent(tenant.name)}`, { cache: 'no-store' });
       if (adminRes.ok) {
         const data = await adminRes.json();
         return NextResponse.json({

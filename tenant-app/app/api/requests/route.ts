@@ -30,8 +30,8 @@ export async function POST(req: NextRequest) {
               fs.mkdirSync(uploadDir, { recursive: true });
             }
             fs.writeFileSync(path.join(uploadDir, fileName), buffer);
-            // Use absolute URL so Admin portal can access the image over the internet
-            savedImageUrls.push(`https://adeer-tenant-portal.fly.dev/uploads/${fileName}`);
+            const baseUrl = process.env.BASE_URL || 'http://localhost:3001';
+            savedImageUrls.push(`${baseUrl}/uploads/${fileName}`);
             validImagesToProcess.push(img);
           }
         } catch (err) {
@@ -42,8 +42,8 @@ export async function POST(req: NextRequest) {
 
     const finalImageUrl = savedImageUrls.length > 0 ? JSON.stringify(savedImageUrls) : null;
 
-    // Send payload to Admin app for AI Processing & Global Storage
-    const adminApiRes = await fetch('https://maintenance-app.fly.dev/api/external/requests', {
+    const adminUrl = process.env.ADMIN_URL || 'http://localhost:3000';
+    const adminApiRes = await fetch(`${adminUrl}/api/external/requests`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
