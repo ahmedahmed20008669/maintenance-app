@@ -14,6 +14,7 @@ COLOR_MUTED = HexColor('#b5b5b5')        # Secondary text color
 COLOR_BORDER = HexColor('#2e3342')       # Border color
 COLOR_WHITE = HexColor('#ffffff')        # White text
 COLOR_BODY_TEXT = HexColor('#2c3e50')    # Main gray body text
+COLOR_DARK_GRAY = HexColor('#4d555d')    # Darker gray for metadata readability on white
 
 class NumberedCanvas(canvas.Canvas):
     """
@@ -40,8 +41,6 @@ class NumberedCanvas(canvas.Canvas):
         if self._pageNumber == 1:
             # Draw Cover Page background decoration
             self.saveState()
-            self.setFillColor(COLOR_DARK_BG)
-            self.rect(0, 0, 8.5 * inch, 11 * inch, fill=True, stroke=False)
             
             # Teal stripe at top only
             self.setFillColor(COLOR_TEAL)
@@ -85,10 +84,10 @@ def create_academic_pdf():
         'CoverTitle', parent=styles['Title'], fontName='Helvetica-Bold', fontSize=24, leading=30, textColor=COLOR_TEAL, alignment=0, spaceAfter=20
     )
     cover_subtitle_style = ParagraphStyle(
-        'CoverSubtitle', parent=styles['Heading2'], fontName='Helvetica', fontSize=14, leading=18, textColor=COLOR_WHITE, alignment=0, spaceAfter=40
+        'CoverSubtitle', parent=styles['Heading2'], fontName='Helvetica', fontSize=14, leading=18, textColor=COLOR_BODY_TEXT, alignment=0, spaceAfter=40
     )
     cover_meta_style = ParagraphStyle(
-        'CoverMeta', parent=styles['Normal'], fontName='Helvetica', fontSize=10, leading=15, textColor=COLOR_MUTED, alignment=0, spaceAfter=10
+        'CoverMeta', parent=styles['Normal'], fontName='Helvetica', fontSize=10, leading=15, textColor=COLOR_DARK_GRAY, alignment=0, spaceAfter=10
     )
     
     heading1_style = ParagraphStyle(
@@ -204,7 +203,7 @@ def create_academic_pdf():
     add_para("<b>Mitigation Strategies:</b> Prompt injection filters sanitize tenant inputs before passing them to the LLM.")
 
     add_heading("5.9 Network & Integration Architecture", 2)
-    add_para("<b>Objectives:</b> Expose secure endpoints for third-party ERPs and mobile apps.")
+    add_para("<b>Objectives:</b> Make secure endpoints for third-party ERPs and mobile apps.")
     add_para("<b>Components:</b> RESTful APIs, Webhook event dispatchers.")
     add_para("<b>Design Rationale:</b> API-first design allows easy integration with smart city grids and IoT sensors.")
 

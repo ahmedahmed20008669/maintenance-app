@@ -17,6 +17,7 @@ COLOR_BORDER = HexColor('#2e3342')       # Border color
 COLOR_WHITE = HexColor('#ffffff')        # White text
 COLOR_TEXT_MAIN = HexColor('#d1d5db')    # Main gray text for table body
 COLOR_BODY_TEXT = HexColor('#2c3e50')    # Main body text color for light pages
+COLOR_DARK_GRAY = HexColor('#4d555d')    # Darker gray for metadata readability on white
 
 class NumberedCanvas(canvas.Canvas):
     """
@@ -44,8 +45,6 @@ class NumberedCanvas(canvas.Canvas):
         if self._pageNumber == 1:
             # Draw Cover Page background decoration
             self.saveState()
-            self.setFillColor(COLOR_DARK_BG)
-            self.rect(0, 0, 8.5 * inch, 11 * inch, fill=True, stroke=False)
             
             # Teal stripe at top only
             self.setFillColor(COLOR_TEAL)
@@ -90,10 +89,10 @@ def create_specs_pdf():
         'CoverTitle', parent=styles['Title'], fontName='Helvetica-Bold', fontSize=24, leading=30, textColor=COLOR_TEAL, alignment=0, spaceAfter=20
     )
     cover_subtitle_style = ParagraphStyle(
-        'CoverSubtitle', parent=styles['Heading2'], fontName='Helvetica', fontSize=14, leading=18, textColor=COLOR_WHITE, alignment=0, spaceAfter=40
+        'CoverSubtitle', parent=styles['Heading2'], fontName='Helvetica', fontSize=14, leading=18, textColor=COLOR_BODY_TEXT, alignment=0, spaceAfter=40
     )
     cover_meta_style = ParagraphStyle(
-        'CoverMeta', parent=styles['Normal'], fontName='Helvetica', fontSize=10, leading=15, textColor=COLOR_MUTED, alignment=0, spaceAfter=10
+        'CoverMeta', parent=styles['Normal'], fontName='Helvetica', fontSize=10, leading=15, textColor=COLOR_DARK_GRAY, alignment=0, spaceAfter=10
     )
     
     # Standard styles

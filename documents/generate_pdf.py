@@ -17,6 +17,8 @@ COLOR_BORDER = colors.HexColor('#2e3342')       # Border color
 COLOR_WHITE = colors.HexColor('#ffffff')        # White text/elements
 COLOR_RED = colors.HexColor('#dd4242')          # Critical alert color
 COLOR_LIGHT_GRAY = colors.HexColor('#f5f5f5')
+COLOR_BODY_TEXT = colors.HexColor('#2c3e50')    # Main gray body text
+COLOR_DARK_GRAY = colors.HexColor('#4d555d')    # Darker gray for metadata readability on white
 
 class NumberedCanvas(canvas.Canvas):
     """
@@ -44,8 +46,6 @@ class NumberedCanvas(canvas.Canvas):
         if self._pageNumber == 1:
             # Draw Cover Page background decoration
             self.saveState()
-            self.setFillColor(COLOR_DARK_BG)
-            self.rect(0, 0, 8.5 * inch, 11 * inch, fill=True, stroke=False)
             
             # Teal stripe at top only
             self.setFillColor(COLOR_TEAL)
@@ -167,7 +167,7 @@ def create_pdf(filename="MaintenanceAI_Competitive_Analysis.pdf"):
         fontName='Helvetica',
         fontSize=14,
         leading=20,
-        textColor=COLOR_WHITE,
+        textColor=COLOR_BODY_TEXT,
         alignment=0,
         spaceAfter=40
     )
@@ -176,7 +176,7 @@ def create_pdf(filename="MaintenanceAI_Competitive_Analysis.pdf"):
         fontName='Helvetica',
         fontSize=10,
         leading=15,
-        textColor=COLOR_MUTED,
+        textColor=COLOR_DARK_GRAY,
         alignment=0,
         spaceAfter=10
     )
