@@ -192,12 +192,37 @@ function SubmitForm() {
           </p>
         </div>
 
-        {/* Submit */}
-        <button type="submit" disabled={loading}
-          className={`w-full flex items-center justify-center h-14 rounded-xl text-white font-semibold text-base transition-all ${loading ? 'bg-[var(--neutral-700)] cursor-wait' : 'bg-[var(--primary-600)] hover:bg-[var(--primary-500)] cursor-pointer'}`}
-        >
-          {loading ? <LoadingSpinner className="w-6 h-6" /> : 'Submit Request'}
-        </button>
+        {/* Submit Button */}
+        <div className="flex justify-center mt-8 w-full h-14">
+          <button
+            type="submit"
+            disabled={loading}
+            className={`relative flex items-center justify-center h-14 rounded-xl text-white font-semibold text-base transition-all duration-500 ease-[cubic-bezier(0.68,-0.55,0.265,1.55)] overflow-hidden group ${
+              loading
+                ? "w-14 rounded-full bg-white shadow-md disabled:cursor-not-allowed cursor-wait border border-[var(--primary-600)]"
+                : "w-full bg-[var(--primary-600)] hover:bg-[var(--primary-500)] shadow-md border border-[var(--primary-700)] cursor-pointer"
+            }`}
+          >
+            {loading ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img 
+                src="/adeer-logo.png" 
+                alt="Processing..." 
+                className="w-10 h-auto object-contain animate-pulse absolute drop-shadow-md" 
+              />
+            ) : (
+              <div className="flex items-center justify-center gap-3 absolute w-full transition-transform duration-300 group-hover:scale-105">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img 
+                  src="/adeer-logo.png" 
+                  alt="Adeer Logo" 
+                  className="h-8 w-auto object-contain drop-shadow-sm brightness-0 invert" 
+                />
+                <span>Submit Request</span>
+              </div>
+            )}
+          </button>
+        </div>
       </form>
     </div>
   );

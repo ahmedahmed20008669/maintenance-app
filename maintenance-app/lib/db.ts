@@ -29,6 +29,7 @@ function createDatabase() {
       actionSteps TEXT DEFAULT '[]',
       estimatedCost TEXT,
       imageUrl TEXT,
+      updatesLog TEXT DEFAULT '[]',
       createdAt TEXT DEFAULT (datetime('now')),
       updatedAt TEXT DEFAULT (datetime('now'))
     );
@@ -43,6 +44,12 @@ function createDatabase() {
       createdAt TEXT DEFAULT (datetime('now'))
     );
   `)
+
+  try {
+    db.exec("ALTER TABLE Request ADD COLUMN updatesLog TEXT DEFAULT '[]'")
+  } catch (e) {
+    // Column already exists or table does not exist
+  }
 
   return db
 }

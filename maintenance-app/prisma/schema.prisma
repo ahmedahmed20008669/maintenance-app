@@ -28,6 +28,7 @@ model Request {
   actionSteps     String   @default("[]")
   estimatedCost   String?
   imageUrl        String?
+  updatesLog      String   @default("[]")
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 }

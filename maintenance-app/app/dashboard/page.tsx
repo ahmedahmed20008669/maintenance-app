@@ -46,6 +46,7 @@ interface Request {
   actionSteps: string;
   estimatedCost: string | null;
   imageUrl: string | null;
+  updatesLog?: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -430,13 +431,28 @@ function DashboardContent() {
                   <h4 className="text-xs font-semibold text-[var(--neutral-500)] uppercase tracking-wider mb-2 font-prompt">
                     Attached Photo
                   </h4>
-                  <div className="rounded-xl overflow-hidden border border-[var(--neutral-700)]">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={selectedRequest.imageUrl}
-                      alt="Tenant Upload"
-                      className="w-full h-auto object-cover max-h-64"
-                    />
+                  <div className="rounded-xl overflow-hidden border border-[var(--neutral-700)] space-y-2">
+                    {(() => {
+                      let urls: string[] = [];
+                      try {
+                        if (selectedRequest.imageUrl.startsWith('[')) {
+                          urls = JSON.parse(selectedRequest.imageUrl);
+                        } else {
+                          urls = [selectedRequest.imageUrl];
+                        }
+                      } catch {
+                        urls = [selectedRequest.imageUrl];
+                      }
+                      return urls.map((url: string, index: number) => (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          key={index}
+                          src={url}
+                          alt={`Tenant Upload ${index + 1}`}
+                          className="w-full h-auto object-cover max-h-96"
+                        />
+                      ));
+                    })()}
                   </div>
                 </div>
               )}
@@ -462,6 +478,44 @@ function DashboardContent() {
                   </p>
                 </div>
               </div>
+
+              {/* Update History / Logs (Admin Only) */}
+              {(() => {
+                let logs: { timestamp: string; text: string }[] = []
+                try {
+                  if (selectedRequest.updatesLog) {
+                    logs = JSON.parse(selectedRequest.updatesLog)
+                  }
+                } catch {
+                  logs = []
+                }
+                if (logs.length <= 1) return null; // No updates yet, just the initial request
+                return (
+                  <div>
+                    <h4 className="text-xs font-semibold text-[var(--neutral-500)] uppercase tracking-wider mb-3 font-prompt">
+                      Ticket Update History Log (Dated)
+                    </h4>
+                    <div className="space-y-3 relative before:absolute before:inset-y-0 before:left-3.5 before:w-0.5 before:bg-[var(--neutral-800)]">
+                      {logs.map((log: any, idx: number) => (
+                        <div key={idx} className="relative pl-8 flex flex-col items-start gap-1">
+                          <div className="absolute left-1.5 top-1.5 w-4.5 h-4.5 rounded-full bg-[var(--primary-500)] border-4 border-[var(--neutral-900)]" />
+                          <span className="text-[10px] text-[var(--neutral-500)] font-mono">
+                            {new Date(log.timestamp).toLocaleString()}
+                          </span>
+                          <div className="bg-[var(--neutral-900)] rounded-xl p-3 border border-[var(--neutral-800)] w-full">
+                            <p className="text-xs text-[var(--neutral-300)] font-medium">
+                              {idx === 0 ? "Initial Submission Description" : `Update Entry #${idx}`}
+                            </p>
+                            <p className="text-sm text-[var(--neutral-400)] mt-1 italic">
+                              &quot;{log.text}&quot;
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )
+              })()}
 
               {/* Action Steps */}
               {(() => {

@@ -23,9 +23,38 @@ export default function TenantDashboard() {
   const [connected, setConnected] = useState(false);
   const [flash, setFlash] = useState<string | null>(null);
   const [notificationPermission, setNotificationPermission] = useState<string>('granted');
+  const [updatingRequestId, setUpdatingRequestId] = useState<string | null>(null);
+  const [updateText, setUpdateText] = useState("");
+  const [submittingUpdateId, setSubmittingUpdateId] = useState<string | null>(null);
   const eventSourceRef = useRef<EventSource | null>(null);
   const prevNotifsRef = useRef(0);
   const prevReqsRef = useRef('');
+
+  const handleSendUpdate = async (reqId: string) => {
+    if (!updateText.trim()) return;
+    setSubmittingUpdateId(reqId);
+    try {
+      const res = await fetch(`/api/requests/${reqId}/update`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ updateText })
+      });
+      if (!res.ok) throw new Error("Failed to update");
+      const updatedReq = await res.json();
+      
+      setRequests(prev => prev.map(r => r.id === reqId ? updatedReq : r));
+      setUpdateText("");
+      setUpdatingRequestId(null);
+      
+      setFlash('status');
+      setTimeout(() => setFlash(null), 2000);
+    } catch (err) {
+      console.error(err);
+      alert("Failed to send update. Please try again.");
+    } finally {
+      setSubmittingUpdateId(null);
+    }
+  };
 
   useEffect(() => {
     if ('Notification' in window) {
@@ -196,6 +225,47 @@ export default function TenantDashboard() {
                     <div className="bg-[var(--neutral-900)] rounded-lg p-3 text-sm text-[var(--neutral-300)] border border-[var(--neutral-800)]">
                       {req.rawInput}
                     </div>
+
+                    {/* Expandable Update Form */}
+                    <div className="mt-4 border-t border-[rgba(255,255,255,0.05)] pt-3">
+                      {updatingRequestId === req.id ? (
+                        <div className="space-y-3">
+                          <textarea
+                            value={updateText}
+                            onChange={(e) => setUpdateText(e.target.value)}
+                            placeholder="Provide additional details or updates for this ticket..."
+                            className="w-full px-3 py-2 text-sm bg-[var(--neutral-900)] border border-[var(--neutral-800)] text-white rounded-lg focus:border-[var(--primary-500)] outline-none resize-none leading-relaxed"
+                            rows={3}
+                          />
+                          <div className="flex gap-2 justify-end">
+                            <button
+                              onClick={() => { setUpdatingRequestId(null); setUpdateText(""); }}
+                              className="px-3 py-1.5 text-xs text-[var(--neutral-400)] hover:text-white transition-colors"
+                            >
+                              Cancel
+                            </button>
+                            <button
+                              disabled={submittingUpdateId === req.id || !updateText.trim()}
+                              onClick={() => handleSendUpdate(req.id)}
+                              className="px-4 py-1.5 text-xs font-semibold bg-[var(--primary-600)] hover:bg-[var(--primary-500)] text-white rounded-lg transition-colors flex items-center gap-1.5"
+                            >
+                              {submittingUpdateId === req.id ? (
+                                <LoadingSpinner className="w-3.5 h-3.5" />
+                              ) : null}
+                              Send Update
+                            </button>
+                          </div>
+                        </div>
+                      ) : (
+                        <button
+                          onClick={() => { setUpdatingRequestId(req.id); setUpdateText(""); }}
+                          className="text-xs text-[var(--primary-400)] hover:text-[var(--primary-300)] transition-colors flex items-center gap-1 font-medium"
+                        >
+                          ✎ Add Ticket Update / Details
+                        </button>
+                      )}
+                    </div>
+
                     {req.assignedTo && (
                       <div className="mt-3 text-xs text-[var(--neutral-400)] flex items-center gap-1.5">
                         <span className="w-2 h-2 rounded-full bg-[#fbbf24]"></span>
