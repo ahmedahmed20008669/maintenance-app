@@ -43,6 +43,9 @@ export async function GET(req: NextRequest) {
             lastNotifHash = notifHash
             const data = JSON.stringify({ requests, notifications, timestamp: Date.now() })
             controller.enqueue(encoder.encode(`data: ${data}\n\n`))
+          } else {
+            // Keep-alive ping to prevent proxy/load balancer from dropping idle connections
+            controller.enqueue(encoder.encode(`: keep-alive\n\n`))
           }
         } catch (err) {
           console.error('SSE error:', err)

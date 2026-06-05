@@ -72,6 +72,7 @@ Respond ONLY with a valid JSON object (no markdown, no code fences) with the fol
   } catch (error) {
     console.error('Gemini API error:', error)
     return {
+      title: 'Maintenance Request',
       category: 'General',
       severity: 'Medium',
       priority: 3,
