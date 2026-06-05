@@ -1,27 +1,80 @@
 import os
 from reportlab.lib.pagesizes import letter
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, PageBreak, Image
-from reportlab.lib.enums import TA_JUSTIFY, TA_LEFT
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, PageBreak
+from reportlab.lib.enums import TA_JUSTIFY
 from reportlab.lib.colors import HexColor
+from reportlab.pdfgen import canvas
+from reportlab.lib.units import inch
 
-def draw_cover_border(canvas, doc):
-    canvas.saveState()
-    canvas.setStrokeColor(HexColor('#0099AD'))
-    canvas.setLineWidth(3)
-    canvas.rect(20, 20, 572, 752)
-    canvas.restoreState()
+# Define Palette (Adeer Navy & Teal theme)
+COLOR_DARK_BG = HexColor('#0f131a')      # Primary dark background
+COLOR_TEAL = HexColor('#0099ad')         # Primary accent
+COLOR_MUTED = HexColor('#b5b5b5')        # Secondary text color
+COLOR_BORDER = HexColor('#2e3342')       # Border color
+COLOR_WHITE = HexColor('#ffffff')        # White text
+COLOR_BODY_TEXT = HexColor('#2c3e50')    # Main gray body text
 
-def add_page_border_and_logo(canvas, doc):
-    canvas.saveState()
-    canvas.setStrokeColor(HexColor('#0099AD'))
-    canvas.setLineWidth(3)
-    canvas.rect(20, 20, 572, 752)
-    logo_path = r"../maintenance-app/public/adeer-logo.png"
-    if os.path.exists(logo_path):
-        # Draw smaller logo, positioned safely below the top page border (772) and above the text margin
-        canvas.drawImage(logo_path, 500, 722, width=60, preserveAspectRatio=True, mask='auto')
-    canvas.restoreState()
+class NumberedCanvas(canvas.Canvas):
+    """
+    Two-pass canvas to dynamically compute total page count 
+    and display standard, professional page headers, footers, and borders.
+    """
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._saved_page_states = []
+
+    def showPage(self):
+        self._saved_page_states.append(dict(self.__dict__))
+        self._startPage()
+
+    def save(self):
+        num_pages = len(self._saved_page_states)
+        for state in self._saved_page_states:
+            self.__dict__.update(state)
+            self.draw_page_decorations(num_pages)
+            super().showPage()
+        super().save()
+
+    def draw_page_decorations(self, page_count):
+        if self._pageNumber == 1:
+            # Draw Cover Page background decoration
+            self.saveState()
+            self.setFillColor(COLOR_DARK_BG)
+            self.rect(0, 0, 8.5 * inch, 11 * inch, fill=True, stroke=False)
+            
+            # Teal stripes at top and bottom
+            self.setFillColor(COLOR_TEAL)
+            self.rect(0, 0, 8.5 * inch, 0.25 * inch, fill=True, stroke=False)
+            self.rect(0, 10.75 * inch, 8.5 * inch, 0.25 * inch, fill=True, stroke=False)
+            self.restoreState()
+            return
+
+        # Regular Pages: Draw standard layout
+        self.saveState()
+        
+        # 3pt Teal Page Border
+        self.setStrokeColor(COLOR_TEAL)
+        self.setLineWidth(3)
+        self.rect(20, 20, 572, 752)
+        
+        # Small adeer logo in header
+        logo_path = r"../maintenance-app/public/adeer-logo.png"
+        if os.path.exists(logo_path):
+            self.drawImage(logo_path, 500, 722, width=60, preserveAspectRatio=True, mask='auto')
+
+        # Footer text & line
+        self.setStrokeColor(COLOR_BORDER)
+        self.setLineWidth(0.5)
+        self.line(40, 45, 572, 45)
+        self.setFont("Helvetica", 8)
+        self.setFillColor(COLOR_MUTED)
+        self.drawString(40, 32, "Confidential - MaintenanceAI Academic Study")
+        
+        # Standard Page numbering: "Page X of Y"
+        page_str = f"Page {self._pageNumber} of {page_count}"
+        self.drawRightString(572, 32, page_str)
+        self.restoreState()
 
 def create_academic_pdf():
     doc = SimpleDocTemplate("MaintenanceAI_Academic_Study_Mohamed_Samir_Hassan_Final.pdf", pagesize=letter,
@@ -29,20 +82,27 @@ def create_academic_pdf():
     styles = getSampleStyleSheet()
     
     # Custom Styles
-    title_style = ParagraphStyle(
-        'CustomTitle', parent=styles['Title'], fontSize=20, leading=24, spaceAfter=20, textColor=HexColor('#0099AD')
+    cover_title_style = ParagraphStyle(
+        'CoverTitle', parent=styles['Title'], fontName='Helvetica-Bold', fontSize=24, leading=30, textColor=COLOR_TEAL, alignment=0, spaceAfter=20
     )
+    cover_subtitle_style = ParagraphStyle(
+        'CoverSubtitle', parent=styles['Heading2'], fontName='Helvetica', fontSize=14, leading=18, textColor=COLOR_WHITE, alignment=0, spaceAfter=40
+    )
+    cover_meta_style = ParagraphStyle(
+        'CoverMeta', parent=styles['Normal'], fontName='Helvetica', fontSize=10, leading=15, textColor=COLOR_MUTED, alignment=0, spaceAfter=10
+    )
+    
     heading1_style = ParagraphStyle(
-        'Heading1', parent=styles['Heading1'], fontSize=16, leading=20, spaceAfter=12, spaceBefore=18, textColor=HexColor('#0099AD')
+        'Heading1', parent=styles['Heading1'], fontSize=16, leading=20, spaceAfter=12, spaceBefore=18, textColor=COLOR_TEAL
     )
     heading2_style = ParagraphStyle(
-        'Heading2', parent=styles['Heading2'], fontSize=14, leading=18, spaceAfter=10, spaceBefore=14, textColor=HexColor('#0099AD')
+        'Heading2', parent=styles['Heading2'], fontSize=14, leading=18, spaceAfter=10, spaceBefore=14, textColor=COLOR_TEAL
     )
     body_style = ParagraphStyle(
-        'BodyText', parent=styles['Normal'], fontSize=11, leading=16, spaceAfter=8, alignment=TA_JUSTIFY
+        'BodyText', parent=styles['Normal'], fontSize=11, leading=16, spaceAfter=8, alignment=TA_JUSTIFY, textColor=COLOR_BODY_TEXT
     )
     bullet_style = ParagraphStyle(
-        'Bullet', parent=styles['Normal'], fontSize=11, leading=16, spaceAfter=6, leftIndent=20, bulletIndent=10
+        'Bullet', parent=styles['Normal'], fontSize=11, leading=16, spaceAfter=6, leftIndent=20, bulletIndent=10, textColor=COLOR_BODY_TEXT
     )
 
     Story = []
@@ -62,12 +122,14 @@ def create_academic_pdf():
         Story.append(Paragraph(f"• {text}", bullet_style))
 
     # --- Title Page ---
-    Story.append(Paragraph("MaintenanceAI: Agentic AI-Driven Autonomous Maintenance Operations and Smart Government Integration", title_style))
-    Story.append(Spacer(1, 20))
-    Story.append(Paragraph("<b>A Comprehensive Technical Study and Architectural Blueprint</b>", ParagraphStyle('SubTitle', parent=styles['Heading2'], alignment=1)))
-    Story.append(Spacer(1, 40))
-    add_para("<b>Author:</b> Mohamed Samir Hassan, MSc, PhD Researcher")
-    add_para("<i>Specialist in Artificial Intelligence, Machine Learning, Deep Learning, Computer Vision, Virtual Reality, Augmented Reality, Digital Transformation, and Emerging Technologies.</i>")
+    Story.append(Spacer(1, 150))
+    Story.append(Paragraph("MaintenanceAI: Agentic AI-Driven Autonomous Operations", cover_title_style))
+    Story.append(Paragraph("<b>A Comprehensive Technical Study and Architectural Blueprint for Smart Property Operations & Government Integration</b>", cover_subtitle_style))
+    Story.append(Spacer(1, 80))
+    Story.append(Paragraph("<b>Author:</b> Mohamed Samir Hassan, MSc, PhD Researcher", cover_meta_style))
+    Story.append(Paragraph("<b>Role:</b> Specialist in AI, Deep Learning, Digital Transformation, and Emerging Technologies", cover_meta_style))
+    Story.append(Paragraph("<b>Date:</b> June 2026", cover_meta_style))
+    Story.append(Paragraph("<b>Classification:</b> Confidential / Academic Study", cover_meta_style))
     Story.append(PageBreak())
 
     # --- Abstract ---
@@ -173,9 +235,11 @@ def create_academic_pdf():
     add_heading("7.1 Business Value and ROI", 2)
     add_para("Implementing MaintenanceAI yields immediate operational dividends. For an enterprise managing 10,000 units, replacing manual triage (avg. 5 minutes/request) with AI (1 second/request) saves approximately 8,300 labor hours annually. Estimated ROI of 315% within the first 12 months due to reduced operational overhead and expedited resolution of critical asset damage.")
 
+    # --- Competitive Analysis ---
     add_heading("7.2 Competitive Analysis", 2)
     add_para("Unlike legacy competitors (Yardi, AppFolio, RealPage) which rely on rigid web forms, MaintenanceAI utilizes conversational NLP. This drastically lowers the barrier to entry for tenants, reducing unrecorded phone calls by 80%.")
 
+    # --- Strategic Recommendations ---
     add_heading("7.3 Strategic Recommendations for Venture Capital", 2)
     add_bullet("IoT Sensor Integration: Proactive AI dispatch before the tenant even notices a leak.")
     add_bullet("Proprietary Small Language Models (SLMs): Training domain-specific SLMs to reduce dependency on third-party LLMs and lower inference costs.")
@@ -189,7 +253,7 @@ def create_academic_pdf():
 
     # --- Conclusion ---
     add_heading("9. Conclusion", 1)
-    add_para("MaintenanceAI represents the vanguard of PropTech innovation. By fusing Next.js edge computing with Google Gemini's Agentic capabilities, it transforms facility management from a reactive cost center into a proactive, data-driven ecosystem. The architectural blueprint outlined in this study ensures that the platform is robust, scalable, and secure enough for the most demanding government and enterprise environments.")
+    add_para("MaintenanceAI represents the vanguard of PropTech innovation. By fusing Next.js edge computing with Google Gemini's Agentic capabilities, it transforms facility management from a reactive cost center into a data-driven ecosystem. The architectural blueprint outlined in this study ensures that the platform is robust, scalable, and secure enough for the most demanding government and enterprise environments.")
 
     # --- References ---
     add_heading("10. References", 1)
@@ -199,7 +263,7 @@ def create_academic_pdf():
     add_bullet("TOGAF Standard, 10th Edition (2022). The Open Group.")
     add_bullet("Google Cloud (2025). Gemini 2.0 Developer Documentation.")
 
-    doc.build(Story, onFirstPage=draw_cover_border, onLaterPages=add_page_border_and_logo)
+    doc.build(Story, canvasmaker=NumberedCanvas)
 
 if __name__ == "__main__":
     create_academic_pdf()

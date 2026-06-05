@@ -2,17 +2,17 @@ import os
 import sys
 from reportlab.lib.pagesizes import letter
 from reportlab.lib import colors
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, PageBreak, KeepTogether
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, PageBreak
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.units import inch
 from reportlab.pdfgen import canvas
 from reportlab.graphics.shapes import Drawing, Rect, String, Line, Group, Polygon
 
-# Define Palette (Adeer International Branding Colors)
-COLOR_DARK_BG = colors.HexColor('#15171c')      # Primary dark background
+# Define Palette (Adeer Navy & Teal theme)
+COLOR_DARK_BG = colors.HexColor('#0f131a')      # Primary dark background
 COLOR_TEAL = colors.HexColor('#0099ad')         # Primary accent
 COLOR_MUTED = colors.HexColor('#b5b5b5')        # Secondary text color
-COLOR_CARD_BG = colors.HexColor('#1f222b')      # Card background color
+COLOR_CARD_BG = colors.HexColor('#1a1f29')      # Card background color
 COLOR_BORDER = colors.HexColor('#2e3342')       # Border color
 COLOR_WHITE = colors.HexColor('#ffffff')        # White text/elements
 COLOR_RED = colors.HexColor('#dd4242')          # Critical alert color
@@ -21,7 +21,7 @@ COLOR_LIGHT_GRAY = colors.HexColor('#f5f5f5')
 class NumberedCanvas(canvas.Canvas):
     """
     Two-pass canvas to dynamically compute total page count 
-    and display standard, professional page headers and footers.
+    and display standard, professional page headers, footers, and borders.
     """
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -40,15 +40,14 @@ class NumberedCanvas(canvas.Canvas):
         super().save()
 
     def draw_page_decorations(self, page_count):
-        # We enforce exactly 10 pages in the document.
         # Skip header/footer on Page 1 (Cover Page).
         if self._pageNumber == 1:
-            # Draw beautiful background decoration on the Cover Page
+            # Draw Cover Page background decoration
             self.saveState()
             self.setFillColor(COLOR_DARK_BG)
             self.rect(0, 0, 8.5 * inch, 11 * inch, fill=True, stroke=False)
             
-            # Subtle accent geometric layout
+            # Teal stripes at top and bottom
             self.setFillColor(COLOR_TEAL)
             self.rect(0, 0, 8.5 * inch, 0.25 * inch, fill=True, stroke=False)
             self.rect(0, 10.75 * inch, 8.5 * inch, 0.25 * inch, fill=True, stroke=False)
@@ -69,12 +68,12 @@ class NumberedCanvas(canvas.Canvas):
             self.drawImage(logo_path, 500, 722, width=60, preserveAspectRatio=True, mask='auto')
 
         # Footer text & line
-        self.setStrokeColor(colors.HexColor('#2e3342'))
+        self.setStrokeColor(COLOR_BORDER)
         self.setLineWidth(0.5)
         self.line(40, 45, 572, 45)
         self.setFont("Helvetica", 8)
         self.setFillColor(COLOR_MUTED)
-        self.drawString(40, 32, "Confidential - For Internal and Partner Use Only")
+        self.drawString(40, 32, "Confidential - MaintenanceAI Competitive Analysis")
         
         # Standard Page numbering: "Page X of Y"
         page_str = f"Page {self._pageNumber} of {page_count}"
@@ -143,7 +142,6 @@ def create_system_diagram():
     return d
 
 def create_pdf(filename="MaintenanceAI_Competitive_Analysis.pdf"):
-    # Target exactly 10 pages. We will use PageBreak() strategically to control pagination.
     doc = SimpleDocTemplate(
         filename,
         pagesize=letter,
@@ -155,31 +153,32 @@ def create_pdf(filename="MaintenanceAI_Competitive_Analysis.pdf"):
 
     styles = getSampleStyleSheet()
     
-    # Custom styles
-    # Cover text styles (for page 1 dark bg)
+    # Custom cover page styles
     style_cover_title = ParagraphStyle(
         name='CoverTitle',
         fontName='Helvetica-Bold',
-        fontSize=32,
-        leading=38,
+        fontSize=24,
+        leading=30,
         textColor=COLOR_TEAL,
         alignment=0, # Left-aligned
-        spaceAfter=15
+        spaceAfter=20
     )
     style_cover_subtitle = ParagraphStyle(
         name='CoverSubtitle',
         fontName='Helvetica',
-        fontSize=16,
-        leading=22,
+        fontSize=14,
+        leading=20,
         textColor=COLOR_WHITE,
+        alignment=0,
         spaceAfter=40
     )
     style_cover_meta = ParagraphStyle(
         name='CoverMeta',
         fontName='Helvetica',
         fontSize=10,
-        leading=14,
+        leading=15,
         textColor=COLOR_MUTED,
+        alignment=0,
         spaceAfter=10
     )
 
@@ -187,28 +186,28 @@ def create_pdf(filename="MaintenanceAI_Competitive_Analysis.pdf"):
     style_h1 = ParagraphStyle(
         name='SectionHeading',
         fontName='Helvetica-Bold',
-        fontSize=20,
-        leading=24,
-        textColor=COLOR_DARK_BG,
+        fontSize=18,
+        leading=22,
+        textColor=colors.HexColor('#0f131a'),
         spaceBefore=15,
-        spaceAfter=15,
+        spaceAfter=12,
         keepWithNext=True
     )
     style_h2 = ParagraphStyle(
         name='SubSectionHeading',
         fontName='Helvetica-Bold',
-        fontSize=14,
-        leading=18,
+        fontSize=13,
+        leading=17,
         textColor=COLOR_TEAL,
         spaceBefore=12,
-        spaceAfter=10,
+        spaceAfter=8,
         keepWithNext=True
     )
     style_body = ParagraphStyle(
         name='CustomBodyText',
         fontName='Helvetica',
         fontSize=10,
-        leading=15,
+        leading=14.5,
         textColor=colors.HexColor('#2c3e50'),
         spaceAfter=10
     )
@@ -227,8 +226,8 @@ def create_pdf(filename="MaintenanceAI_Competitive_Analysis.pdf"):
     style_callout = ParagraphStyle(
         name='CalloutText',
         fontName='Helvetica-Oblique',
-        fontSize=10.5,
-        leading=16,
+        fontSize=10,
+        leading=14.5,
         textColor=COLOR_TEAL,
         backColor=colors.HexColor('#f0f9fa'),
         borderColor=COLOR_TEAL,
@@ -244,15 +243,15 @@ def create_pdf(filename="MaintenanceAI_Competitive_Analysis.pdf"):
     # ================= PAGE 1: COVER PAGE =================
     story.append(Spacer(1, 150))
     story.append(Paragraph("MAINTENANCE-AI", style_cover_title))
-    story.append(Paragraph("The Paradigm Shift in Smart Property Operations & Maintenance Systems", style_cover_subtitle))
-    story.append(Spacer(1, 120))
+    story.append(Paragraph("<b>The Paradigm Shift in Smart Property Operations & Maintenance Systems — A Comparative Landscape and Competitive Analysis</b>", style_cover_subtitle))
+    story.append(Spacer(1, 80))
     
     # Metadata Block
     story.append(Paragraph("<b>Author:</b> Adeer International Engineering & Products Group", style_cover_meta))
     story.append(Paragraph("<b>Version:</b> 1.2.0 (Enterprise Release)", style_cover_meta))
     story.append(Paragraph("<b>Target Audience:</b> Property Managers, Asset Owners, Operations Directors", style_cover_meta))
     story.append(Paragraph("<b>Date:</b> June 2026", style_cover_meta))
-    story.append(Paragraph("<b>Classification:</b> Confidential / Proprietary", style_cover_meta))
+    story.append(Paragraph("<b>Classification:</b> Confidential / Competitive Analysis", style_cover_meta))
     story.append(PageBreak())
 
     # ================= PAGE 2: EXECUTIVE SUMMARY =================
@@ -407,7 +406,7 @@ def create_pdf(filename="MaintenanceAI_Competitive_Analysis.pdf"):
     story.append(Paragraph("• <b>Metric KPI Ribbon:</b> Instant visibility into critical KPIs: total active tickets, pending triage, in-progress repairs, resolved maintenance, and critical-priority issues.", style_bullet))
     story.append(Paragraph("• <b>Advanced Multi-Filter Matrix:</b> Live search filter and status tabs let property managers narrow down thousands of units to specific categories (e.g., Plumbing, Electrical) or urgent states in milliseconds.", style_bullet))
     story.append(Paragraph("• <b>Zero-Horizontal Scroll Side Drawer:</b> Rather than splitting the screen or forcing horizontal page scrolling, our custom React drawer slides in gracefully from the right edge. It overlays the workspace, showing full AI insights, action steps, and cost boundaries without disrupting context.", style_bullet))
-    story.append(Paragraph("• <b>Adeer International Brand Styling:</b> The design utilizes a premium dark color theme (`#15171c`) accented with bright teal (`#0099ad`), bringing high visual contrast and modern design aesthetics to the workspace.", style_bullet))
+    story.append(Paragraph("• <b>Adeer International Brand Styling:</b> The design utilizes a premium dark color theme (`#0f131a`) accented with bright teal (`#0099ad`), bringing high visual contrast and modern design aesthetics to the workspace.", style_bullet))
     story.append(Paragraph(
         "This dynamic design increases property managers' ticket resolution capacity. By organizing information visually by priority and severity, "
         "managers can identify, assign, and update a high-priority emergency ticket in less than 5 seconds.",

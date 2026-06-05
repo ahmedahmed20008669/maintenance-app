@@ -6,6 +6,7 @@ from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, PageBreak, 
 from reportlab.lib.enums import TA_JUSTIFY, TA_LEFT, TA_CENTER
 from reportlab.lib.colors import HexColor
 from reportlab.lib.units import inch
+from reportlab.pdfgen import canvas
 
 # Define Palette (Adeer Navy & Teal theme)
 COLOR_DARK_BG = HexColor('#0f131a')      # Primary dark background
@@ -14,53 +15,88 @@ COLOR_MUTED = HexColor('#b5b5b5')        # Secondary text color
 COLOR_CARD_BG = HexColor('#1a1f29')      # Card background color
 COLOR_BORDER = HexColor('#2e3342')       # Border color
 COLOR_WHITE = HexColor('#ffffff')        # White text
-COLOR_TEXT_MAIN = HexColor('#d1d5db')    # Main gray text
+COLOR_TEXT_MAIN = HexColor('#d1d5db')    # Main gray text for table body
+COLOR_BODY_TEXT = HexColor('#2c3e50')    # Main body text color for light pages
 
-def draw_cover_border(canvas, doc):
-    canvas.saveState()
-    # Fill background with dark navy on cover page
-    canvas.setFillColor(COLOR_DARK_BG)
-    canvas.rect(0, 0, 8.5 * inch, 11 * inch, fill=True, stroke=False)
-    
-    # Draw double teal stripe at top and bottom
-    canvas.setFillColor(COLOR_TEAL)
-    canvas.rect(0, 0, 8.5 * inch, 0.25 * inch, fill=True, stroke=False)
-    canvas.rect(0, 10.75 * inch, 8.5 * inch, 0.25 * inch, fill=True, stroke=False)
-    canvas.restoreState()
+class NumberedCanvas(canvas.Canvas):
+    """
+    Two-pass canvas to dynamically compute total page count 
+    and display standard, professional page headers, footers, and borders.
+    """
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._saved_page_states = []
 
-def add_page_border_and_logo(canvas, doc):
-    canvas.saveState()
-    canvas.setStrokeColor(COLOR_TEAL)
-    canvas.setLineWidth(3)
-    canvas.rect(20, 20, 572, 752)
-    
-    logo_path = r"../maintenance-app/public/adeer-logo.png"
-    if os.path.exists(logo_path):
-        # Draw smaller logo, positioned safely below the top page border (772) and above the text margin
-        canvas.drawImage(logo_path, 500, 722, width=60, preserveAspectRatio=True, mask='auto')
+    def showPage(self):
+        self._saved_page_states.append(dict(self.__dict__))
+        self._startPage()
+
+    def save(self):
+        num_pages = len(self._saved_page_states)
+        for state in self._saved_page_states:
+            self.__dict__.update(state)
+            self.draw_page_decorations(num_pages)
+            super().showPage()
+        super().save()
+
+    def draw_page_decorations(self, page_count):
+        # Skip header/footer on Page 1 (Cover Page).
+        if self._pageNumber == 1:
+            # Draw Cover Page background decoration
+            self.saveState()
+            self.setFillColor(COLOR_DARK_BG)
+            self.rect(0, 0, 8.5 * inch, 11 * inch, fill=True, stroke=False)
+            
+            # Teal stripes at top and bottom
+            self.setFillColor(COLOR_TEAL)
+            self.rect(0, 0, 8.5 * inch, 0.25 * inch, fill=True, stroke=False)
+            self.rect(0, 10.75 * inch, 8.5 * inch, 0.25 * inch, fill=True, stroke=False)
+            self.restoreState()
+            return
+
+        # Regular Pages: Draw standard layout
+        self.saveState()
         
-    # Running footer
-    canvas.setFont("Helvetica", 8)
-    canvas.setFillColor(COLOR_MUTED)
-    canvas.drawString(40, 32, "Confidential - MaintenanceAI Solution Overview")
-    canvas.drawRightString(572, 32, f"Page {doc.page}")
-    canvas.restoreState()
+        # 3pt Teal Page Border
+        self.setStrokeColor(COLOR_TEAL)
+        self.setLineWidth(3)
+        self.rect(20, 20, 572, 752)
+        
+        # Small adeer logo in header
+        logo_path = r"../maintenance-app/public/adeer-logo.png"
+        if os.path.exists(logo_path):
+            self.drawImage(logo_path, 500, 722, width=60, preserveAspectRatio=True, mask='auto')
+
+        # Footer text & line
+        self.setStrokeColor(COLOR_BORDER)
+        self.setLineWidth(0.5)
+        self.line(40, 45, 572, 45)
+        self.setFont("Helvetica", 8)
+        self.setFillColor(COLOR_MUTED)
+        self.drawString(40, 32, "Confidential - MaintenanceAI Solution Overview")
+        
+        # Standard Page numbering: "Page X of Y"
+        page_str = f"Page {self._pageNumber} of {page_count}"
+        self.drawRightString(572, 32, page_str)
+        self.restoreState()
 
 def create_solution_overview_pdf():
     doc = SimpleDocTemplate("Solution_Overview.pdf", pagesize=letter,
                             rightMargin=50, leftMargin=50, topMargin=95, bottomMargin=50)
     styles = getSampleStyleSheet()
     
-    # Custom Styles
-    title_style = ParagraphStyle(
-        'CoverTitle', parent=styles['Title'], fontSize=24, leading=28, spaceAfter=20, textColor=COLOR_TEAL
+    # Custom Cover Styles
+    cover_title_style = ParagraphStyle(
+        'CoverTitle', parent=styles['Title'], fontName='Helvetica-Bold', fontSize=24, leading=30, textColor=COLOR_TEAL, alignment=0, spaceAfter=20
     )
-    subtitle_style = ParagraphStyle(
-        'CoverSub', parent=styles['Heading2'], alignment=TA_CENTER, textColor=COLOR_WHITE, fontSize=14, leading=18
+    cover_subtitle_style = ParagraphStyle(
+        'CoverSubtitle', parent=styles['Heading2'], fontName='Helvetica', fontSize=14, leading=18, textColor=COLOR_WHITE, alignment=0, spaceAfter=40
     )
-    meta_style = ParagraphStyle(
-        'CoverMeta', parent=styles['Normal'], textColor=COLOR_MUTED, fontSize=10, leading=14
+    cover_meta_style = ParagraphStyle(
+        'CoverMeta', parent=styles['Normal'], fontName='Helvetica', fontSize=10, leading=15, textColor=COLOR_MUTED, alignment=0, spaceAfter=10
     )
+    
+    # Standard styles
     heading1_style = ParagraphStyle(
         'Heading1', parent=styles['Heading1'], fontSize=16, leading=20, spaceAfter=12, spaceBefore=18, textColor=COLOR_TEAL
     )
@@ -68,11 +104,15 @@ def create_solution_overview_pdf():
         'Heading2', parent=styles['Heading2'], fontSize=12, leading=16, spaceAfter=8, spaceBefore=12, textColor=COLOR_TEAL
     )
     body_style = ParagraphStyle(
-        'BodyText', parent=styles['Normal'], fontSize=10, leading=14, spaceAfter=8, textColor=HexColor('#2c3e50')
+        'BodyText', parent=styles['Normal'], fontSize=10, leading=14.5, spaceAfter=8, textColor=COLOR_BODY_TEXT
+    )
+    body_bold_style = ParagraphStyle(
+        'BodyTextBold', parent=body_style, fontName='Helvetica-Bold'
     )
     bullet_style = ParagraphStyle(
-        'Bullet', parent=styles['Normal'], fontSize=10, leading=14, spaceAfter=6, leftIndent=20, bulletIndent=10, textColor=HexColor('#2c3e50')
+        'Bullet', parent=styles['Normal'], fontSize=10, leading=14.5, spaceAfter=6, leftIndent=20, bulletIndent=10, textColor=COLOR_BODY_TEXT
     )
+    
     table_header_style = ParagraphStyle(
         'TableHeader', parent=styles['Normal'], fontSize=9.5, leading=12, fontName='Helvetica-Bold', textColor=COLOR_WHITE
     )
@@ -98,14 +138,14 @@ def create_solution_overview_pdf():
 
     # --- Cover Page ---
     Story.append(Spacer(1, 150))
-    Story.append(Paragraph("MAINTENANCE-AI", title_style))
-    Story.append(Paragraph("<b>The Paradigm Shift in Smart Property Operations & Maintenance Systems</b>", subtitle_style))
-    Story.append(Spacer(1, 120))
+    Story.append(Paragraph("MAINTENANCE-AI", cover_title_style))
+    Story.append(Paragraph("<b>The Paradigm Shift in Smart Property Operations & Maintenance Systems — Solution Overview and Product Specifications</b>", cover_subtitle_style))
+    Story.append(Spacer(1, 80))
     
-    Story.append(Paragraph("<b>Author:</b> Adeer International Engineering & Products Group", meta_style))
-    Story.append(Paragraph("<b>Target Audience:</b> Property Managers, Asset Owners, Operations Directors", meta_style))
-    Story.append(Paragraph("<b>Date:</b> June 2026", meta_style))
-    Story.append(Paragraph("<b>Classification:</b> Confidential / Proprietary", meta_style))
+    Story.append(Paragraph("<b>Author:</b> Adeer International Engineering & Products Group", cover_meta_style))
+    Story.append(Paragraph("<b>Target Audience:</b> Property Managers, Asset Owners, Operations Directors", cover_meta_style))
+    Story.append(Paragraph("<b>Date:</b> June 2026", cover_meta_style))
+    Story.append(Paragraph("<b>Classification:</b> Confidential / Solution Overview", cover_meta_style))
     Story.append(PageBreak())
 
     # --- Section 1: Problem Statement ---
@@ -225,7 +265,7 @@ def create_solution_overview_pdf():
     add_bullet("<b>Integration with IoT:</b> Connect smart building sensors for automatic issue detection.")
     add_bullet("<b>Mobile App:</b> React Native companion app for tenants and service providers.")
 
-    doc.build(Story, onFirstPage=draw_cover_border, onLaterPages=add_page_border_and_logo)
+    doc.build(Story, canvasmaker=NumberedCanvas)
     print("Solution Overview PDF generated successfully via ReportLab!")
 
 if __name__ == "__main__":
