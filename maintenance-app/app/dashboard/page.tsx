@@ -550,11 +550,20 @@ function DashboardContent() {
 
               {/* Estimated Cost */}
               {selectedRequest.estimatedCost && (
-                <div className="flex items-center gap-3 bg-[rgba(245,158,11,0.08)] rounded-xl p-4 border border-[rgba(245,158,11,0.15)]">
-                  <DollarIcon className="w-5 h-5 text-[#fbbf24] shrink-0" />
-                  <span className="text-sm text-[#fbbf24] font-semibold">
-                    {selectedRequest.estimatedCost}
-                  </span>
+                <div className="space-y-2">
+                  <div className="flex items-center gap-3 bg-[rgba(245,158,11,0.08)] rounded-xl p-4 border border-[rgba(245,158,11,0.15)]">
+                    <DollarIcon className="w-5 h-5 text-[#fbbf24] shrink-0" />
+                    <span className="text-sm text-[#fbbf24] font-semibold">
+                      {selectedRequest.estimatedCost}
+                    </span>
+                  </div>
+                  <a
+                    href={`/api/requests/${selectedRequest.id}/invoice`}
+                    download
+                    className="w-full h-11 flex items-center justify-center gap-2 bg-[rgba(0,153,173,0.1)] hover:bg-[rgba(0,153,173,0.15)] text-[var(--primary-400)] hover:text-[var(--primary-300)] border border-[rgba(0,153,173,0.2)] hover:border-[rgba(0,153,173,0.3)] rounded-xl text-xs font-semibold font-prompt transition-all cursor-pointer shadow-sm"
+                  >
+                    <span>📥</span> Download Branded Invoice PDF
+                  </a>
                 </div>
               )}
 
